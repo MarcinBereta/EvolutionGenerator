@@ -125,9 +125,6 @@ public class Gens {
         for(int i = 0; i < gens.length; i++){
             this.gens[i] = (int)(Math.random()*this.gens.length);
         }
-        for(int i = 0; i < gens.length; i++){
-            System.out.println(gens[i]);
-        }
     }
 
     public int[] getAllGens(){

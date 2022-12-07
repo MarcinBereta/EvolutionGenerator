@@ -20,7 +20,9 @@ public class Animal implements IMapElement{
     private IWorldMap map;
     private int plantsEaten = 0;
 
-    public Animal(Vector2d position, IWorldMap map, MapDirection orientation, int energy, int startEnergy, int randomGens, int genSize, int genStep, int copulationEnergy, Gens gens ){
+    public Animal(Vector2d position, IWorldMap map, MapDirection orientation,
+                  int energy, int startEnergy, int randomGens, int genSize,
+                  int genStep, int copulationEnergy, Gens gens ){
         this.energy = energy+ startEnergy;
         this.map = map;
         this.position = position;
@@ -38,6 +40,7 @@ public class Animal implements IMapElement{
         else{
             this.gens = gens;
         }
+
     }
 
     public boolean isDead(){
@@ -63,7 +66,7 @@ public class Animal implements IMapElement{
         Vector2d oldPosition = this.position;
         this.position = this.position.add(this.orientation.toUnitVector());
         this.position = this.map.correctPosition(oldPosition, this.position, this);
-
+        positionChanged(oldPosition, this.position);
         this.age++;
     }
 
@@ -74,12 +77,13 @@ public class Animal implements IMapElement{
 
     public Animal copulate(Animal partner){
         int childEnergy = this.copulationEnergy*2;
-        this.changeEnergy(-copulationEnergy);
-        partner.changeEnergy(-copulationEnergy);
+
         this.incrementChildCount();
         partner.incrementChildCount();
         Gens childGens = new Gens(genSize,randomGens,genStep);
         childGens.generateGens(this.gens, partner.gens, this.energy, partner.getEnergy());
+        this.changeEnergy(-copulationEnergy);
+        partner.changeEnergy(-copulationEnergy);
         int childOrientationIndex =(int) Math.random()*8;
         MapDirection childOrientation = MapDirection.NORTH;
         for(int i =0 ; i< childOrientationIndex; i++){
@@ -88,6 +92,10 @@ public class Animal implements IMapElement{
         return new Animal(this.getPosition(),this.map, childOrientation,childEnergy, this.startEnergy, this.randomGens, this.genSize,this.genStep,this.copulationEnergy,childGens);
     }
 
+
+    public void addObserver(IPositionChangeObserver observer){
+        observers.add(observer);
+    }
     private void positionChanged(Vector2d oldPosition, Vector2d newPosition){
         for(IPositionChangeObserver observer : observers){
             observer.positionChanged(oldPosition, newPosition, this);
@@ -112,6 +120,9 @@ public class Animal implements IMapElement{
         return this.position;
     }
 
+    public int getChildrenCount(){
+        return this.childrenCount;
+    }
     public MapDirection getOrientation(){
         return this.orientation;
     }
