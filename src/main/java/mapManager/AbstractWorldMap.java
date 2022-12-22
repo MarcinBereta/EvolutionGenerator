@@ -6,21 +6,8 @@ import java.io.InvalidObjectException;
 import java.util.*;
 
 public abstract class AbstractWorldMap implements IPositionChangeObserver {
-    protected int mapWidth;
-    protected int mapHeight;
-    protected int plantProfit;
-    protected int dayCost;
-    protected int startEnergy;
-    protected int copulationEnergy;
-    protected int jungleSize;
-    protected int jungleType;
-    protected int moveOption;
-
-    protected int dailyGrass;
-
-    protected int randomGens;
-
-    protected int genSize;
+    public MapSettings mapSettings;
+    private int jungleSize;
     //Grass positions
     protected Map<Vector2d, Grass> grass = new HashMap<>();
     //Animals positions
@@ -31,36 +18,23 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver {
     protected Comparator<FieldHistory> dieCompare = Comparator.comparing(FieldHistory::getDeathCount);
     protected SortedSet<FieldHistory> dieSet = new TreeSet<>(dieCompare);
 
-    protected LinkedList<Animal> animalsList = new LinkedList<>();
 
     protected LinkedList<Animal> animalHistoryList = new LinkedList<>();
 
     protected Map<Vector2d, FieldHistory> fieldHistory = new HashMap<>();
 
 
-    public AbstractWorldMap(int mapWidth, int mapHeight, int plantProfit, int dayCost, int startEnergy, int copulationEnergy,
-                 int jungleType, int startGrass,
-                 int moveOption, int dailyGrass, int randomGens, int genSize) {
-        this.mapWidth = mapWidth;
-        this.mapHeight = mapHeight;
-        this.plantProfit = plantProfit;
-        this.dayCost = dayCost;
-        this.startEnergy = startEnergy;
-        this.copulationEnergy = copulationEnergy;
-        this.jungleType = jungleType;
-        this.jungleSize = (int) ((int) mapHeight * mapWidth * 0.2);
-        this.moveOption = moveOption;
-        this.dailyGrass = dailyGrass;
-        this.randomGens = randomGens;
-        this.genSize = genSize;
+    public AbstractWorldMap(MapSettings settings) {
+        this.mapSettings= settings;
+        this.jungleSize = (int) ((int) this.mapSettings.mapHeight * this.mapSettings.mapWidth * 0.2);
 
         generateStartingJungle();
 
-        for (int i = 0; i < startGrass; i++) {
+        for (int i = 0; i < this.mapSettings.startGrass; i++) {
             addGrass();
         }
-        for(int i = 0; i < mapWidth; i++){
-            for(int j = 0; j < mapHeight; j++){
+        for(int i = 0; i < this.mapSettings.mapWidth; i++){
+            for(int j = 0; j < this.mapSettings.mapHeight; j++){
                 dieSet.add(new FieldHistory(new Vector2d(i,j), 0));
                 fieldHistory.put(new Vector2d(i,j), new FieldHistory(new Vector2d(i,j), 0));
             }
@@ -69,20 +43,19 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver {
 
 
     public void setStartingAnimal(Animal myAnimal){
-        animalsList.add(myAnimal);
         animals.put(myAnimal.getPosition(), new LinkedList<>());
         animals.get(myAnimal.getPosition()).add(myAnimal);
-        myAnimal.addObserver((IPositionChangeObserver) this);
+        myAnimal.addObserver(this);
     }
     protected void generateStartingJungle() {
-        if (jungleType == 0) {
+        if (this.mapSettings.jungleType == MapEffects.EQUATOR) {
             int tempJunglex = 0;
-            int jungleStartY = (mapHeight) / 2;
-            int tempJungley = (mapHeight) / 2;
+            int jungleStartY = (this.mapSettings.mapHeight) / 2;
+            int tempJungley = (this.mapSettings.mapHeight) / 2;
             int rowCount = 0;
             for (int i = 0; i < this.jungleSize; i++) {
                 junglePossible.add(new Grass(new Vector2d(tempJunglex, tempJungley)));
-                tempJunglex = (tempJunglex + 1) % (mapWidth);
+                tempJunglex = (tempJunglex + 1) % (this.mapSettings.mapWidth);
                 if (tempJunglex == 0) {
                     if (rowCount == 0) {
                         tempJungley++;
@@ -96,11 +69,11 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver {
                     }
                 }
             }
-        } else {
+        } else if(this.mapSettings.jungleType == MapEffects.TOXIC){
             int elementCount = 0;
             while (elementCount < jungleSize) {
-                int x = (int) (Math.random() * mapWidth);
-                int y = (int) (Math.random() * mapHeight);
+                int x = (int) (Math.random() * this.mapSettings.mapWidth);
+                int y = (int) (Math.random() * this.mapSettings.mapHeight);
                 if(grass.containsKey(new Vector2d(x,y))){
                     continue;
                 }else{
@@ -121,6 +94,9 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver {
     }
 
     protected void addGrassToJungle() {
+        if(junglePossible.size() == 0){
+            return;
+        }
         int index = (int) (Math.random() * junglePossible.size());
         Grass grass = junglePossible.get(index);
         junglePossible.remove(index);
@@ -129,8 +105,8 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver {
 
     protected void addGrassToEdge() {
         LinkedList<Vector2d> edgePossible = new LinkedList<>();
-        for(int i = 0; i < mapWidth; i++){
-            for(int j = 0; j < mapHeight; j++){
+        for(int i = 0; i < this.mapSettings.mapWidth; i++){
+            for(int j = 0; j < this.mapSettings.mapHeight; j++){
                 if(grass.containsKey(new Vector2d(i,j)) || junglePossible.contains(new Grass(new Vector2d(i,j)))){
                     continue;
                 }else{
@@ -157,25 +133,33 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver {
         newAnimals.add(animal);
     }
 
-    public void removeDeadAnimals() throws InvalidObjectException {
-        if(animalsList.size() == 0){
-            throw new InvalidObjectException("No animals left");
-        }
-        List<Animal> AnimalsToRemove = new LinkedList<>();
-        for(Animal animal : animalsList){
-            if(animal.isDead()){
-                animals.get(animal.getPosition()).remove(animal);
-                animalHistoryList.add(animal);
-                dieSet.remove(fieldHistory.get(animal.getPosition()));
-                fieldHistory.get(animal.getPosition()).increaseDeathCount();
-                dieSet.add(fieldHistory.get(animal.getPosition()));
-                AnimalsToRemove.add(animal);
-            }
-        }
-        for(Animal animal : AnimalsToRemove){
-            animalsList.remove(animal);
-        }
+    public void removeDeadAnimal(Animal animal){
+        LinkedList<Animal> animals = this.animals.get(animal.getPosition());
+        animals.remove(animal);
+        animal.removeObserver(this);
     }
+//    public LinkedList<Animal> removeDeadAnimals() throws InvalidObjectException {
+//        LinkedList<Animal> deadAnimals = new LinkedList<>();
+//        if(animalsList.size() == 0){
+//            throw new InvalidObjectException("No animals left");
+//        }
+//        List<Animal> AnimalsToRemove = new LinkedList<>();
+//        for(Animal animal : animalsList){
+//            if(animal.isDead()){
+//                animals.get(animal.getPosition()).remove(animal);
+//                animalHistoryList.add(animal);
+//                dieSet.remove(fieldHistory.get(animal.getPosition()));
+//                fieldHistory.get(animal.getPosition()).increaseDeathCount();
+//                dieSet.add(fieldHistory.get(animal.getPosition()));
+//                AnimalsToRemove.add(animal);
+//                deadAnimals.add(animal);
+//            }
+//        }
+//        for(Animal animal : AnimalsToRemove){
+//            animalsList.remove(animal);
+//        }
+//        return deadAnimals;
+//    }
 
     public Vector2d correctPosition(Vector2d oldPosition, Vector2d newPosition, Animal animal) {
         return newPosition;
@@ -206,14 +190,15 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver {
             }
         }
     };
-    public void simulateDayPass() {
-        for(LinkedList<Animal> animalList: animals.values()){
+    public LinkedList<Animal> simulateDayPass() {
+        LinkedList<Animal> newAnimals = new LinkedList<>();
+        for(LinkedList<Animal> animalList: animals.values()){;
             if(animalList.size() > 0){
                 animalList.sort(animalComparator);
                 Animal strongestAnimal = animalList.get(0);
                 if(grass.containsKey(strongestAnimal.getPosition())){
-                    strongestAnimal.changeEnergy(plantProfit);
-                    if(jungleType == 1){
+                    strongestAnimal.changeEnergy(this.mapSettings.plantProfit);
+                    if(this.mapSettings.jungleType == MapEffects.TOXIC){
                         FieldHistory field =  fieldHistory.remove(strongestAnimal.getPosition());
                         dieSet.remove(field);
                         field.increaseDeathCount();
@@ -226,7 +211,7 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver {
                 }
                 LinkedList <Animal> animalReproduction = new LinkedList<>();
                 for(Animal animal1: animalList){
-                    if(animal1.getEnergy() >= copulationEnergy){
+                    if(animal1.getEnergy() >= this.mapSettings.copulationEnergy){
                         animalReproduction.add(animal1);
                     }
                 }
@@ -234,12 +219,15 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver {
                     Animal animal1 = animalReproduction.remove(0);
                     Animal animal2 = animalReproduction.remove(0);
                     Animal child = animal1.copulate(animal2);
-                    child.addObserver((IPositionChangeObserver) this);
-                    animals.get(animal1.getPosition()).add(child);
+                    child.addObserver(this);
+                    animals.get(child.getPosition()).add(child);
+                    animalList.add(child);
+                    newAnimals.add(child);
                 }
 
             }
         }
+        return newAnimals;
     }
 
     public void dailyGrassChange(){
@@ -252,14 +240,9 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver {
                 }
             }
         }
-        for(int i = 0; i < dailyGrass; i++){
+        for(int i = 0; i < this.mapSettings.dailyGrass; i++){
             addGrass();
         }
     }
 
-    public void simulateMovement(){
-        for(Animal myAnimal: animalsList){
-            myAnimal.move();
-        }
-    }
 }

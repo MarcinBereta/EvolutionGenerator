@@ -5,17 +5,24 @@ import mapElements.MapDirection;
 import mapElements.Vector2d;
 
 import java.io.InvalidObjectException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
 public class SimulationEngine {
-    IWorldMap map;
-   public SimulationEngine (IWorldMap map, int startAnimals){
+    AbstractWorldMap map;
+    MapSettings mapSettings;
+    protected LinkedList<Animal> animalsList = new LinkedList<>();
+    protected LinkedList<Animal> deadAnimals = new LinkedList<>();
+
+   public SimulationEngine (AbstractWorldMap map, MapSettings mapSettings){
          this.map = map;
-       for(int i = 0; i< startAnimals; i++){
-           Vector2d position = new Vector2d((int)(Math.random()*map.mapWidth), (int)(Math.random()*map.mapHeight));
+         this.mapSettings = mapSettings;
+       for(int i = 0; i< mapSettings.startingAnimals; i++){
+           Vector2d position = new Vector2d((int)(Math.random()*mapSettings.mapWidth), (int)(Math.random()*map.mapSettings.mapHeight));
               Animal animal = new Animal(position, map, MapDirection.NORTH, 0,
-                      map.startEnergy, map.randomGens, map.genSize, map.randomGens, map.copulationEnergy, null);
+                      mapSettings, null);
+                animalsList.add(animal);
                 map.setStartingAnimal(animal);
 
        }
@@ -24,14 +31,20 @@ public class SimulationEngine {
     public void run(){
        int i = 0;
        while(i < 100){
-           map.simulateMovement();
-           try{
-               map.removeDeadAnimals();
-           }catch(InvalidObjectException e){
-               System.out.println("Invalid object");
-               break;
+              for(Animal animal : animalsList){
+                animal.move();
+              }
+           LinkedList<Animal> newAnimals = map.simulateDayPass();
+           animalsList.addAll(newAnimals);
+           LinkedList<Animal> deadAnimals = new LinkedList<>();
+           for(Animal animal : animalsList){
+               if(animal.isDead()){
+                   deadAnimals.add(animal);
+                   map.removeDeadAnimal(animal);
+                   deadAnimals.add(animal);
+               }
            }
-           map.simulateDayPass();
+           animalsList.removeAll(deadAnimals);
            map.dailyGrassChange();
            i++;
        }

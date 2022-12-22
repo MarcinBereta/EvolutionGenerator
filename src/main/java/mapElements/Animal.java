@@ -1,6 +1,8 @@
 package mapElements;
 
+import mapManager.AbstractWorldMap;
 import mapManager.IWorldMap;
+import mapManager.MapSettings;
 
 import java.util.ArrayList;
 
@@ -8,33 +10,22 @@ public class Animal implements IMapElement{
     public Vector2d position;
     public MapDirection orientation;
     private int energy =0;
-    private int startEnergy;
     private int age =0;
     private int childrenCount = 0;
-    private int copulationEnergy;
+    private MapSettings mapSettings;
     private ArrayList<IPositionChangeObserver> observers = new ArrayList<>();
     public Gens gens;
-    private int genSize;
-    private int randomGens;
-    private int genStep;
-    private IWorldMap map;
-    private int plantsEaten = 0;
+    private AbstractWorldMap map;
 
-    public Animal(Vector2d position, IWorldMap map, MapDirection orientation,
-                  int energy, int startEnergy, int randomGens, int genSize,
-                  int genStep, int copulationEnergy, Gens gens ){
-        this.energy = energy+ startEnergy;
+    public Animal(Vector2d position, AbstractWorldMap map, MapDirection orientation,
+                  int energy, MapSettings mapSettings, Gens gens) {
+        this.mapSettings = mapSettings;
+        this.energy = energy + this.mapSettings.startEnergy;
         this.map = map;
         this.position = position;
-        this.orientation = MapDirection.NORTH;
-        this.copulationEnergy = copulationEnergy;
-        this.startEnergy = startEnergy;
         this.orientation = orientation;
-        this.genSize = genSize;
-        this.randomGens = randomGens;
-        this.genStep = genStep;
         if(gens == null){
-            this.gens = new Gens(genSize,randomGens,genStep);
+            this.gens = new Gens(mapSettings);
             this.gens.generateStartingGens();
         }
         else{
@@ -45,10 +36,6 @@ public class Animal implements IMapElement{
 
     public boolean isDead(){
         return this.energy <= 0;
-    }
-
-    public void increaseGrassCount(){
-        this.plantsEaten++;
     }
 
     public void changeEnergy(int energy){
@@ -76,20 +63,21 @@ public class Animal implements IMapElement{
 
 
     public Animal copulate(Animal partner){
-        int childEnergy = this.copulationEnergy*2;
+        int childEnergy = this.mapSettings.copulationEnergy*2;
 
         this.incrementChildCount();
         partner.incrementChildCount();
-        Gens childGens = new Gens(genSize,randomGens,genStep);
-        childGens.generateGens(this.gens, partner.gens, this.energy, partner.getEnergy());
-        this.changeEnergy(-copulationEnergy);
-        partner.changeEnergy(-copulationEnergy);
+        Gens childGens = new Gens(this.mapSettings);
+        childGens.generateGens(this.gens, partner.gens, this.energy + mapSettings.copulationEnergy, partner.getEnergy()+ mapSettings.copulationEnergy);
+        this.changeEnergy(-this.mapSettings.copulationEnergy);
+        partner.changeEnergy(-this.mapSettings.copulationEnergy);
         int childOrientationIndex =(int) Math.random()*8;
         MapDirection childOrientation = MapDirection.NORTH;
         for(int i =0 ; i< childOrientationIndex; i++){
             childOrientation = childOrientation.next();
         }
-        return new Animal(this.getPosition(),this.map, childOrientation,childEnergy, this.startEnergy, this.randomGens, this.genSize,this.genStep,this.copulationEnergy,childGens);
+        return new Animal(this.getPosition(),this.map, childOrientation,childEnergy,
+                this.mapSettings,childGens);
     }
 
 
@@ -101,6 +89,9 @@ public class Animal implements IMapElement{
             observer.positionChanged(oldPosition, newPosition, this);
         }
     }
+    public void removeObserver(IPositionChangeObserver observer){
+        observers.remove(observer);
+    }
     public int getEnergy(){
         return this.energy;
     }
@@ -109,9 +100,6 @@ public class Animal implements IMapElement{
         return this.age;
     }
 
-    public int getPlantsCount(){
-        return this.plantsEaten;
-    }
     public void incrementChildCount (){
         this.childrenCount ++;
     }

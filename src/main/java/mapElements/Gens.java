@@ -1,15 +1,20 @@
 package mapElements;
 
+import mapManager.MapSettings;
+
+import java.util.Map;
+
 public class Gens {
     private int[] gens;
     private int genIndex;
-    private int moveRandom;
-
-    private int genRandomize;
-    public Gens(int N, int randomGen, int genRandomize){
-        this.gens = new int[N];
-        this.moveRandom = randomGen;
-        this.genRandomize = genRandomize;
+    private MapEffects moveType;
+    private MapSettings mapSettings;
+    private MapEffects genGenereatorType;
+    public Gens(MapSettings mapSettings){
+        this.gens = new int[mapSettings.genSize];
+        this.moveType = mapSettings.moveType;
+        this.genGenereatorType = mapSettings.genType;
+        this.mapSettings = mapSettings;
     }
 
     public void generateGens(Gens parent1, Gens parent2, int energy1, int energy2){
@@ -73,7 +78,7 @@ public class Gens {
                 genCounter++;
             }
         }
-        if(genRandomize == 1){
+        if(genGenereatorType == MapEffects.FULLRANDOM){
             genCounter = 0;
             while (genCounter < gensToChange){
                 int newGen = (int)(Math.random()*8);
@@ -82,7 +87,7 @@ public class Gens {
                     genCounter++;
                 }
             }
-        }else{
+        }else if(genGenereatorType == MapEffects.SMALLCORRECTION){
             genCounter = 0;
             while (genCounter < gensToChange){
                 int ascOrDesc = (int)(Math.random()*2);
@@ -107,13 +112,13 @@ public class Gens {
 
     public int getGen(){
         int moveIndex = (int) (Math.random() * 100);
-        if(moveRandom == 1){
+        if(moveType == MapEffects.BITOFMADDNESS){
             if (moveIndex > 80){
                 genIndex = (genIndex + 2) % gens.length;
             }else{
                 genIndex = (genIndex + 1) % gens.length;
             }
-        }else{
+        }else if(moveType == MapEffects.FULLPREDESTINATION){
             genIndex = (genIndex + 1) % gens.length;
         }
 
