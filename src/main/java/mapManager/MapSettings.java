@@ -9,7 +9,7 @@ public class MapSettings {
     public int dayCost = 5;
     public int startEnergy = 20;
     public int copulationEnergy = 5;
-    public int startingAnimals = 5;
+    public int startingAnimals = 10;
     public int dailyGrass = 10;
     public int startGrass = 10;
     public MapEffects jungleType = MapEffects.TOXIC;

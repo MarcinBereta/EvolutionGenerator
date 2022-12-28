@@ -1,14 +1,16 @@
 package mapManager;
 
 import mapElements.Animal;
-import mapElements.FieldHistory;
 import mapElements.MapDirection;
 import mapElements.Vector2d;
 
 public class Earth extends AbstractWorldMap{
+
     public Earth(MapSettings mapSettings) {
+
         super(mapSettings);
     }
+
     @Override
     public Vector2d correctPosition(Vector2d oldPosition, Vector2d newPosition, Animal animal) {
         if (newPosition.x >= super.mapSettings.mapWidth || newPosition.x <= 0) {

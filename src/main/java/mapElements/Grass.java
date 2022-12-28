@@ -15,4 +15,8 @@ public class Grass implements IMapElement {
     public String toString() {
         return "grass";
     }
+
+    public String getView(){
+        return "src/main/resources/grass.png";
+    }
 }

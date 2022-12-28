@@ -2,10 +2,9 @@ package mapManager;
 
 import mapElements.*;
 
-import java.io.InvalidObjectException;
 import java.util.*;
 
-public abstract class AbstractWorldMap implements IPositionChangeObserver {
+public abstract class AbstractWorldMap implements IPositionChangeObserver{
     public MapSettings mapSettings;
     private int jungleSize;
     //Grass positions
@@ -40,6 +39,7 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver {
             }
         }
     }
+
 
 
     public void setStartingAnimal(Animal myAnimal){
@@ -123,6 +123,7 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver {
     }
 
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition, Animal animal) {
+        System.out.println("Position changed: "+oldPosition +" "+ newPosition);
         LinkedList<Animal> animals = this.animals.get(oldPosition);
         animals.remove(animal);
         LinkedList<Animal> newAnimals = this.animals.get(newPosition);
@@ -138,33 +139,9 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver {
         animals.remove(animal);
         animal.removeObserver(this);
     }
-//    public LinkedList<Animal> removeDeadAnimals() throws InvalidObjectException {
-//        LinkedList<Animal> deadAnimals = new LinkedList<>();
-//        if(animalsList.size() == 0){
-//            throw new InvalidObjectException("No animals left");
-//        }
-//        List<Animal> AnimalsToRemove = new LinkedList<>();
-//        for(Animal animal : animalsList){
-//            if(animal.isDead()){
-//                animals.get(animal.getPosition()).remove(animal);
-//                animalHistoryList.add(animal);
-//                dieSet.remove(fieldHistory.get(animal.getPosition()));
-//                fieldHistory.get(animal.getPosition()).increaseDeathCount();
-//                dieSet.add(fieldHistory.get(animal.getPosition()));
-//                AnimalsToRemove.add(animal);
-//                deadAnimals.add(animal);
-//            }
-//        }
-//        for(Animal animal : AnimalsToRemove){
-//            animalsList.remove(animal);
-//        }
-//        return deadAnimals;
-//    }
-
     public Vector2d correctPosition(Vector2d oldPosition, Vector2d newPosition, Animal animal) {
         return newPosition;
     }
-
 
     public static Comparator<Animal> animalComparator = new Comparator<Animal>() {
         @Override
@@ -243,6 +220,28 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver {
         for(int i = 0; i < this.mapSettings.dailyGrass; i++){
             addGrass();
         }
+    }
+
+    public String[] getVisualisation(Vector2d position){
+        String myColor = "green";
+        String type = "none";
+
+        if(animals.get(position) == null || animals.get(position).size() == 0){
+            type = "none";
+            myColor = "green";
+        }else if(animals.get(position).size() > 0 && animals.get(position).size() < 6) {
+            type = "animal";
+            myColor = "blue";
+        }else if (animals.get(position).size() >= 6){
+            type = "animal";
+            myColor = "red";
+        }
+        if(grass.get(position) != null && type.equals("none")){
+            type = "grass";
+            myColor = "yellow";
+        }
+        String[] visualisation= {myColor, type};
+        return visualisation;
     }
 
 }

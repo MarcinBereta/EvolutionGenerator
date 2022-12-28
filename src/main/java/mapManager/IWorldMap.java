@@ -5,7 +5,7 @@ import mapElements.*;
 import java.io.InvalidObjectException;
 import java.util.*;
 
-public class IWorldMap implements IPositionChangeObserver {
+public class IWorldMap implements IPositionChangeObserver{
     public int mapWidth;
     public int mapHeight;
     public int plantProfit;
@@ -25,7 +25,7 @@ public class IWorldMap implements IPositionChangeObserver {
     //Grass positions
     public Map<Vector2d, Grass> grass = new HashMap<>();
     //Animals positions
-    public Map<Vector2d, LinkedList<Animal>> animals = new HashMap<>();
+    public Map<Vector2d, ArrayList<Animal>> animals = new HashMap<>();
     //Array to check if location are possible for new gras
     //Empty jungle locations
     public LinkedList<Grass> junglePossible = new LinkedList<>();
@@ -72,7 +72,7 @@ public class IWorldMap implements IPositionChangeObserver {
 
     public void setStartingAnimal(Animal myAnimal){
         animalsList.add(myAnimal);
-        animals.put(myAnimal.getPosition(), new LinkedList<>());
+        animals.put(myAnimal.getPosition(), new ArrayList<>());
         animals.get(myAnimal.getPosition()).add(myAnimal);
         myAnimal.addObserver(this);
     }
@@ -113,7 +113,7 @@ public class IWorldMap implements IPositionChangeObserver {
         }
     }
 
-    private void addGrass() {
+    public void addGrass() {
         int probability = (int) (Math.random() * 100);
         if (probability < 80) {
             this.addGrassToJungle();
@@ -121,7 +121,6 @@ public class IWorldMap implements IPositionChangeObserver {
             this.addGrassToEdge();
         }
     }
-
     private void addGrassToJungle() {
         int index = (int) (Math.random() * junglePossible.size());
         Grass grass = junglePossible.get(index);
@@ -149,11 +148,11 @@ public class IWorldMap implements IPositionChangeObserver {
     }
 
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition, Animal animal) {
-        LinkedList<Animal> animals = this.animals.get(oldPosition);
+        ArrayList<Animal> animals = this.animals.get(oldPosition);
         animals.remove(animal);
-        LinkedList<Animal> newAnimals = this.animals.get(newPosition);
+        ArrayList<Animal> newAnimals = this.animals.get(newPosition);
         if (newAnimals == null) {
-            newAnimals = new LinkedList<>();
+            newAnimals = new ArrayList<>();
             this.animals.put(newPosition, newAnimals);
         }
         newAnimals.add(animal);
@@ -227,7 +226,7 @@ public class IWorldMap implements IPositionChangeObserver {
         }
     };
     public void simulateDayPass() {
-        for(LinkedList<Animal> animalList: animals.values()){
+        for(ArrayList<Animal> animalList: animals.values()){
             if(animalList.size() > 0){
                 animalList.sort(animalComparator);
                 Animal strongestAnimal = animalList.get(0);
@@ -265,7 +264,7 @@ public class IWorldMap implements IPositionChangeObserver {
     public void dailyGrassChange(){
         for(Grass myGrass: grass.values()){
             Vector2d myGrassPos = myGrass.getPosition();
-            LinkedList<Animal> animalsAtPos = animals.get(myGrassPos);
+            ArrayList<Animal> animalsAtPos = animals.get(myGrassPos);
             if(animalsAtPos != null){
                 if(animalsAtPos.size() >= 1){
                     grass.remove(myGrass);
@@ -283,5 +282,10 @@ public class IWorldMap implements IPositionChangeObserver {
         }
     }
 
+    public Vector2d getLowerLeft() {
+        return new Vector2d(0,0);}
+    public Vector2d getUpperRight() {
+        return new Vector2d(this.mapWidth,this.mapHeight);
+    }
 
 }

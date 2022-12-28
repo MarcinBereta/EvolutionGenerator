@@ -1,7 +1,6 @@
 package mapElements;
 
 import mapManager.AbstractWorldMap;
-import mapManager.IWorldMap;
 import mapManager.MapSettings;
 
 import java.util.ArrayList;
@@ -38,6 +37,9 @@ public class Animal implements IMapElement{
         return this.energy <= 0;
     }
 
+    public Gens getAnimalGenes() {
+        return this.gens;
+    }
     public void changeEnergy(int energy){
         this.energy += energy;
         if(this.energy < 0){
@@ -117,4 +119,6 @@ public class Animal implements IMapElement{
     public String toString(){
         return this.position.toString() + " " + this.orientation.toString()+" " + this.gens.toString();
     }
+    public String getView(){
+        return "src/main/resources/up.png";}
 }
