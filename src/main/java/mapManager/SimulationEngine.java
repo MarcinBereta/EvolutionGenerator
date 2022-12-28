@@ -14,6 +14,9 @@ public class SimulationEngine implements Runnable {
     protected LinkedList<Animal> animalsList = new LinkedList<>();
     protected LinkedList<Animal> deadAnimals = new LinkedList<>();
     private List<AnimalMoveInteface> observers = new ArrayList<>();
+    private Animal testAnimal;
+    private boolean firstAnimal = true;
+    private Vector2d or;
 
    public SimulationEngine (AbstractWorldMap map, MapSettings mapSettings){
          this.map = map;
@@ -34,24 +37,40 @@ public class SimulationEngine implements Runnable {
        while(i < 100){
            for(Animal animal : animalsList){
              animal.move();
-             System.out.println(animal.getPosition());
            }
-           updateMap();
+
            LinkedList<Animal> newAnimals = map.simulateDayPass();
+
 //           updateMap();
-           animalsList.addAll(newAnimals);
-           LinkedList<Animal> deadAnimals = new LinkedList<>();
+           for(Animal animal : newAnimals){
+               if(firstAnimal){
+                   testAnimal = animal;
+                   firstAnimal = false;
+                   or = animal.position;
+               }
+               System.out.println(animal.getPosition());
+               animalsList.add(animal);
+           }
+//           animalsList.addAll(newAnimals);
+            if(animalsList.size() <= 1){
+                System.out.println("Koniec gry");
+                break;
+            }
+           LinkedList<Animal> nolivingAnimals = new LinkedList<>();
            for(Animal animal : animalsList){
                if(animal.isDead()){
-                   deadAnimals.add(animal);
-                   map.removeDeadAnimal(animal);
-                   deadAnimals.add(animal);
+                   nolivingAnimals.add(animal);
+//                   System.out.println("DEAD "+ animal.getPosition());
                }
            }
 //           updateMap();
-           animalsList.removeAll(deadAnimals);
+           for(Animal animal : nolivingAnimals){
+               map.removeDeadAnimal(animal);
+           }
+           deadAnimals.addAll(nolivingAnimals);
+           animalsList.removeAll(nolivingAnimals);
            map.dailyGrassChange();
-//           updateMap();
+           updateMap();
            i++;
        }
     }
@@ -61,7 +80,7 @@ public class SimulationEngine implements Runnable {
         }
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             System.out.println("The simulation has stopped");
         }

@@ -123,7 +123,6 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
     }
 
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition, Animal animal) {
-        System.out.println("Position changed: "+oldPosition +" "+ newPosition);
         LinkedList<Animal> animals = this.animals.get(oldPosition);
         animals.remove(animal);
         LinkedList<Animal> newAnimals = this.animals.get(newPosition);
@@ -135,9 +134,7 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
     }
 
     public void removeDeadAnimal(Animal animal){
-        LinkedList<Animal> animals = this.animals.get(animal.getPosition());
-        animals.remove(animal);
-        animal.removeObserver(this);
+        this.animals.get(animal.getPosition()).remove(animal);
     }
     public Vector2d correctPosition(Vector2d oldPosition, Vector2d newPosition, Animal animal) {
         return newPosition;
@@ -184,20 +181,30 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
                         junglePossible.remove(new Grass(strongestAnimal.getPosition()));
                         junglePossible.add(new Grass(dieSet.first().getPosition()));
                     }
-
                 }
+
+                for(Animal animal: animalList){
+                    animal.changeEnergy(-this.mapSettings.dayCost);
+                    if(animal.isDead()){
+//                        System.out.println(animal.getPosition() + " " + animal.getEnergy());
+//                        System.out.println(animalList.size());
+                    }
+                }
+
                 LinkedList <Animal> animalReproduction = new LinkedList<>();
                 for(Animal animal1: animalList){
                     if(animal1.getEnergy() >= this.mapSettings.copulationEnergy){
                         animalReproduction.add(animal1);
                     }
                 }
+                if(animalReproduction.size() >= 2){
+                    System.out.println(animalReproduction.size() + "pos: " + animalReproduction.get(0).getPosition());
+                }
                 while (animalReproduction.size() >= 2){
                     Animal animal1 = animalReproduction.remove(0);
                     Animal animal2 = animalReproduction.remove(0);
                     Animal child = animal1.copulate(animal2);
                     child.addObserver(this);
-                    animals.get(child.getPosition()).add(child);
                     animalList.add(child);
                     newAnimals.add(child);
                 }
@@ -223,25 +230,26 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
     }
 
     public String[] getVisualisation(Vector2d position){
-        String myColor = "green";
+        String myColor = "white";
         String type = "none";
-
         if(animals.get(position) == null || animals.get(position).size() == 0){
             type = "none";
-            myColor = "green";
+            myColor = "white";
         }else if(animals.get(position).size() > 0 && animals.get(position).size() < 6) {
-            type = "animal";
-            myColor = "blue";
+            type = " " + position;
+            myColor = "green";
         }else if (animals.get(position).size() >= 6){
-            type = "animal";
+            type = " " + position;
             myColor = "red";
         }
-        if(grass.get(position) != null && type.equals("none")){
+         if(grass.get(position) != null && type.equals("none")){
             type = "grass";
             myColor = "yellow";
         }
         String[] visualisation= {myColor, type};
         return visualisation;
     }
+
+
 
 }

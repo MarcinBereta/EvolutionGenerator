@@ -5,13 +5,13 @@ import mapElements.MapEffects;
 public class MapSettings {
     public int mapWidth = 10;
     public int mapHeight = 10;
-    public int plantProfit = 10;
-    public int dayCost = 5;
+    public int plantProfit = 3;
+    public int dayCost = 2;
     public int startEnergy = 20;
-    public int copulationEnergy = 5;
+    public int copulationEnergy = 10;
     public int startingAnimals = 10;
-    public int dailyGrass = 10;
-    public int startGrass = 10;
+    public int dailyGrass = 5;
+    public int startGrass = 5;
     public MapEffects jungleType = MapEffects.TOXIC;
     //GEN SECTION
     public MapEffects moveType = MapEffects.BITOFMADDNESS;

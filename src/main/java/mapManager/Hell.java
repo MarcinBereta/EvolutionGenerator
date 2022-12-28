@@ -12,14 +12,11 @@ public class Hell extends AbstractWorldMap{
         if (newPosition.x > super.mapSettings.mapWidth || newPosition.x < 0) {
                 animal.changeEnergy(-super.mapSettings.dayCost);
                 Vector2d newVect =  new Vector2d((int)(Math.random() * super.mapSettings.mapWidth), (int)(Math.random() * super.mapSettings.mapHeight));
-            System.out.println(newVect + "NEW VECTOR");
                 return newVect;
         }
         else if(newPosition.y > super.mapSettings.mapHeight || newPosition.y < 0) {
                 animal.changeEnergy(-super.mapSettings.dayCost);
                 Vector2d newVect =  new Vector2d((int)(Math.random() * super.mapSettings.mapWidth), (int)(Math.random() * super.mapSettings.mapHeight));
-                System.out.println(newVect + "NEW VECTOR");
-                System.out.println(super.mapSettings.mapWidth + " " + super.mapSettings.mapHeight);
                 return newVect;
         }
         return newPosition;
