@@ -15,7 +15,7 @@ public class ParameterValidator {
         worldParams = loadParamWorld(configFileName);
         checkConsistency();
 //        world = new World(worldParams, epochCount, epochDuration);
-        new SimulationWindow();
+        new SimulationWindow(worldParams);
     }
 
 
@@ -24,7 +24,7 @@ public class ParameterValidator {
         worldParams = loadParamWorld(configFileName);
         checkConsistency();
 //        world = new World(worldParams, epochCount, epochDuration, csvFilePath);
-        new SimulationWindow();
+        new SimulationWindow(worldParams);
     }
 
     private Map<WorldParamType, Object> loadParamWorld(String configFileName) throws FileNotFoundException, IllegalArgumentException{

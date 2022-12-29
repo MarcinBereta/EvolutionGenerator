@@ -10,6 +10,7 @@ public class Animal implements IMapElement{
     public MapDirection orientation;
     private int energy =0;
     private int age =0;
+    private int lifeSpan = 0;
     private int childrenCount = 0;
     private MapSettings mapSettings;
     private ArrayList<IPositionChangeObserver> observers = new ArrayList<>();
@@ -75,6 +76,7 @@ public class Animal implements IMapElement{
         for(int i =0 ; i< childOrientationIndex; i++){
             childOrientation = childOrientation.next();
         }
+
         return new Animal(this.getPosition(),this.map, childOrientation,childEnergy,
                 this.mapSettings,childGens);
     }
@@ -98,7 +100,13 @@ public class Animal implements IMapElement{
     public int getAge(){
         return this.age;
     }
+    public void survivedDay(){
+        this.lifeSpan+=1;
+    }
+    public int getLifeSpan(){
 
+        return this.lifeSpan;
+    }
     public void incrementChildCount (){
         this.childrenCount ++;
     }

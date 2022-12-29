@@ -21,6 +21,8 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
     protected LinkedList<Animal> animalHistoryList = new LinkedList<>();
 
     protected Map<Vector2d, FieldHistory> fieldHistory = new HashMap<>();
+    private int totalGrassInJungle = 0;
+    private int totalGrassOutsideJungle = 0;
 
 
     public AbstractWorldMap(MapSettings settings) {
@@ -234,22 +236,32 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
         String type = "none";
         if(animals.get(position) == null || animals.get(position).size() == 0){
             type = "none";
-            myColor = "white";
+            myColor = "transparent";
         }else if(animals.get(position).size() > 0 && animals.get(position).size() < 6) {
             type = " " + position;
-            myColor = "green";
+            myColor = "blue";
         }else if (animals.get(position).size() >= 6){
             type = " " + position;
             myColor = "red";
         }
          if(grass.get(position) != null && type.equals("none")){
             type = "grass";
-            myColor = "yellow";
+            myColor = "green";
         }
         String[] visualisation= {myColor, type};
         return visualisation;
     }
+    public void subtractTotalGrassInJungle(int v) {
+        this.totalGrassInJungle -= v;
+    }
 
+    public void subtractTotalGrassOutsideJungle(int v) {
+        this.totalGrassOutsideJungle -= v;
+    }
+
+    public int getTotalGrassAmount() {
+        return this.totalGrassInJungle + this.totalGrassOutsideJungle;
+    }
 
 
 }

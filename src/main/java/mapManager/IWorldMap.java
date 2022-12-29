@@ -39,6 +39,7 @@ public class IWorldMap implements IPositionChangeObserver{
     private Map<Vector2d, FieldHistory> fieldHistory = new HashMap<>();
 
 
+
     public IWorldMap(int mapWidth, int mapHeight, int plantProfit, int dayCost, int startEnergy, int copulationEnergy,
                      int jungleType, int edgeType, int startGrass,
                      int moveOption, int dailyGrass, int randomGens, int genSize) {
@@ -287,5 +288,8 @@ public class IWorldMap implements IPositionChangeObserver{
     public Vector2d getUpperRight() {
         return new Vector2d(this.mapWidth,this.mapHeight);
     }
+
+
+
 
 }

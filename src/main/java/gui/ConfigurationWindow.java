@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -34,6 +35,8 @@ public class ConfigurationWindow {
     private final Spinner<Double> epochDurationSpinner = new Spinner<>(0.1, 5, 0.5, 0.1);
     public ConfigurationWindow(){
         Stage inputWindow = new Stage();
+        Image img = new Image("https://static.wixstatic.com/media/2cd43b_2373b379948d4e0cb910c593f7edb96e~mv2.png/v1/fill/w_637,h_800,al_c,q_90,enc_auto/2cd43b_2373b379948d4e0cb910c593f7edb96e~mv2.png");
+        inputWindow.getIcons().add(img);
         inputWindow.setTitle("Configuration window");
         VBox configFileSelectionVbox = createConfigFileSelection();
         VBox csvBox = createCSVInputField(inputWindow);
