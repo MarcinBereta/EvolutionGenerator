@@ -108,8 +108,8 @@ public class SimulationEngine implements Runnable {
     }
     public double getAvgEnergy(){
         int sum = 0;
-        for (Animal a : this.animalsList){
-            sum += a.getEnergy();
+        for (Animal animal : this.animalsList){
+            sum += animal.getEnergy();
         }
         return (sum*1.0)/this.countAnimals();
     }
@@ -117,8 +117,8 @@ public class SimulationEngine implements Runnable {
         countLifeSpan();}
     public double getAvgChildrenAmount(){
         int sum = 0;
-        for (Animal a : this.animalsList){
-            sum += a.getChildrenCount();
+        for (Animal animal : this.animalsList){
+            sum += animal.getChildrenCount();
         }
         return (sum*1.0)/this.countAnimals();
     }
@@ -127,15 +127,15 @@ public class SimulationEngine implements Runnable {
 
     }
     public void countLifeSpan(){
-        for (Animal a : animalsList) {
-            a.survivedDay();
+        for (Animal animal : animalsList) {
+            animal.survivedDay();
         }
     }
 
     public double getAvgLifeSpan(){
         int sum = 0;
-        for (Animal a : this.deadAnimals){
-            sum += a.getLifeSpan();
+        for (Animal animal : this.deadAnimals){
+            sum += animal.getLifeSpan();
         }
         if(this.deadAnimals.size()>0)
             return (sum*1.0)/this.deadAnimals.size();
