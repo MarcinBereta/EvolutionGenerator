@@ -57,7 +57,7 @@ public class SimulationEngine implements Runnable {
                 animalsList.add(animal);
             }
 //           animalsList.addAll(newAnimals);
-            if (animalsList.size() <= 1) {
+            if (animalsList.size() < 1) {
                 System.out.println("Koniec gry");
                 break;
             }

@@ -1,5 +1,6 @@
 package mapManager;
 
+import javafx.scene.shape.Circle;
 import mapElements.*;
 
 import java.util.*;
@@ -231,7 +232,7 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
         }
     }
 
-    public String[] getVisualisation(Vector2d position){
+    public String[] getVisualisation(Vector2d position, Map<Circle, Vector2d> positions, Circle circle){
         String myColor = "white";
         String type = "none";
         if(animals.get(position) == null || animals.get(position).size() == 0){
@@ -244,10 +245,11 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
             type = " " + position;
             myColor = "red";
         }
-         if(grass.get(position) != null && type.equals("none")){
+        if(grass.get(position) != null && type.equals("none")){
             type = "grass";
             myColor = "green";
         }
+        positions.put(circle, position);
         String[] visualisation= {myColor, type};
         return visualisation;
     }
@@ -263,5 +265,18 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
         return this.totalGrassInJungle + this.totalGrassOutsideJungle;
     }
 
+    public Animal getAnimalAtPosition(Vector2d position) {
+        LinkedList<Animal> animalsAtPosition = animals.get(position);
+        if (animalsAtPosition != null && !animalsAtPosition.isEmpty()) {
+            return animalsAtPosition.getFirst();
+        }
+        return null;
+    }
 
+    public LinkedList<Animal> getAnimalsAtPosition(Vector2d position){
+        if(animals.get(position) != null){
+            return animals.get(position);
+        }
+        return new LinkedList<Animal>();
+    }
 }

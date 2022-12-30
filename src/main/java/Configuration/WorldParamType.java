@@ -90,7 +90,7 @@ public enum WorldParamType {
             case GRASS_ENERGY,
                     GRASS_GROWTH_RATE,
                     REPRODUCTION_ENERGY_THRESHOLD -> 1;
-            case INIT_ANIMAL_COUNT -> 3;
+            case INIT_ANIMAL_COUNT -> 20;
             case ANIMAL_GENOME_LENGTH -> 7;
         };
     }

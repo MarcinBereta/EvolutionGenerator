@@ -84,17 +84,17 @@ public class ParameterValidator {
         }
     }
 
-    public static String startNewSimulation(
-            String ConfigFileName, String csvFilePath, Integer epochCount, Double epochDuration){
-        try{
-            new ParameterValidator(ConfigFileName, epochCount, epochDuration,  csvFilePath);
-            return "";
-        }
-        catch (IllegalArgumentException | FileNotFoundException e){
-            System.out.println(e.getMessage());
-            return e.getMessage();
-        }
-    }
+//    public static String startNewSimulation(
+//            String ConfigFileName, String csvFilePath, Integer epochCount, Double epochDuration){
+//        try{
+//            new ParameterValidator(ConfigFileName, epochCount, epochDuration);
+//            return "";
+//        }
+//        catch (IllegalArgumentException | FileNotFoundException e){
+//            System.out.println(e.getMessage());
+//            return e.getMessage();
+//        }
+//    }
 
 
     private void checkConsistency() throws IllegalArgumentException{
@@ -115,6 +115,7 @@ public class ParameterValidator {
 
         for (WorldParamType param : mustBePositiveParams){
             mustBePositive(param);
+
         }
 
         Integer mapHeight = (Integer) getParamValue(WorldParamType.MAP_HEIGHT);

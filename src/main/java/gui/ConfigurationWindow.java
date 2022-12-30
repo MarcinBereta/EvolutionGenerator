@@ -28,7 +28,7 @@ public class ConfigurationWindow {
             new ChoiceBox<>(FXCollections.observableArrayList(listFiles(Config.CONFIG_DIR_PATH)));
     private final Label errorMsg;
     private final CheckBox csvCheckBox = new CheckBox("Save simulation statistics in CSV file");
-    private final TextField csvDirectoryPathField = new TextField(Config.CSV_FILES_DIR_PATH);
+
     private final TextField csvFileNameField = new TextField();
     private VBox csvPathSelection;
     private final Spinner<Integer> epochCountSpinner = new Spinner<>(1, 10000, 100);
@@ -39,7 +39,7 @@ public class ConfigurationWindow {
         inputWindow.getIcons().add(img);
         inputWindow.setTitle("Configuration window");
         VBox configFileSelectionVbox = createConfigFileSelection();
-        VBox csvBox = createCSVInputField(inputWindow);
+//        VBox csvBox = createCSVInputField(inputWindow);
         errorMsg = new Label();
         errorMsg.setTextFill(Color.RED);
         Button submitButton = new Button("Create New Simulation");
@@ -55,7 +55,7 @@ public class ConfigurationWindow {
         HBox epochDurationContainer = createParamInput("Epoch Duration:", epochDurationSpinner);
         VBox container = new VBox(
                 configFileSelectionVbox,
-                csvBox, epochCountContainer,
+                epochCountContainer,
                 epochDurationContainer,
                 errorMsg,
                 submitButton
@@ -87,41 +87,39 @@ public class ConfigurationWindow {
         return mainBox;
     }
 
-    private VBox createCSVInputField(Stage mainConfigWindow){
-        //Upper box
-        Label textFieldLabel = new Label("Select Directory: ");
-        Button browseButton = new Button("Browse");
-        HBox upperSpacingBox = new HBox();
-        HBox.setHgrow(upperSpacingBox, Priority.ALWAYS);
-        browseButton.setOnAction(event -> {
-            DirectoryChooser directoryChooser = new DirectoryChooser();
-            directoryChooser.setTitle("Select Directory");
-            File directory = directoryChooser.showDialog(mainConfigWindow);
-            if (directory != null) {
-                csvDirectoryPathField.setText(directory.getAbsolutePath());
-            }
-        });
-        HBox csvHBoxUpper = new HBox(textFieldLabel, upperSpacingBox, csvDirectoryPathField, browseButton);
-        HBox lowerSpacingBox = new HBox();
-        HBox.setHgrow(lowerSpacingBox, Priority.ALWAYS);
-        HBox csvHBoxLower = new HBox(new Label ("File name: "), lowerSpacingBox, csvFileNameField);
-        csvPathSelection = new VBox(csvHBoxUpper, csvHBoxLower);
-        csvPathSelection.setAlignment(Pos.CENTER);
-        csvPathSelection.setSpacing(10);
-        VBox mainVBox = new VBox(csvCheckBox);
-        mainVBox.setAlignment(Pos.CENTER);
-        mainVBox.setSpacing(20);
-        csvCheckBox.selectedProperty().addListener(
-                (ObservableValue <? extends Boolean> ov, Boolean oldVal, Boolean newVal) -> {
-                    if (!oldVal && newVal){
-                        mainVBox.getChildren().add(csvPathSelection);
-                    } else if (!newVal && oldVal){
-                        mainVBox.getChildren().remove(csvPathSelection);
-                    }
-                });
-
-        return mainVBox;
-    }
+//    private VBox createCSVInputField(Stage mainConfigWindow){
+//        //Upper box
+//        Label textFieldLabel = new Label("Select Directory: ");
+//        Button browseButton = new Button("Browse");
+//        HBox upperSpacingBox = new HBox();
+//        HBox.setHgrow(upperSpacingBox, Priority.ALWAYS);
+//        browseButton.setOnAction(event -> {
+//            DirectoryChooser directoryChooser = new DirectoryChooser();
+//            directoryChooser.setTitle("Select Directory");
+//            File directory = directoryChooser.showDialog(mainConfigWindow);
+//
+//        });
+//        HBox csvHBoxUpper = new HBox(textFieldLabel, upperSpacingBox, browseButton);
+//        HBox lowerSpacingBox = new HBox();
+//        HBox.setHgrow(lowerSpacingBox, Priority.ALWAYS);
+//        HBox csvHBoxLower = new HBox(new Label ("File name: "), lowerSpacingBox, csvFileNameField);
+//        csvPathSelection = new VBox(csvHBoxUpper, csvHBoxLower);
+//        csvPathSelection.setAlignment(Pos.CENTER);
+//        csvPathSelection.setSpacing(10);
+//        VBox mainVBox = new VBox(csvCheckBox);
+//        mainVBox.setAlignment(Pos.CENTER);
+//        mainVBox.setSpacing(20);
+//        csvCheckBox.selectedProperty().addListener(
+//                (ObservableValue <? extends Boolean> ov, Boolean oldVal, Boolean newVal) -> {
+//                    if (!oldVal && newVal){
+//                        mainVBox.getChildren().add(csvPathSelection);
+//                    } else if (!newVal && oldVal){
+//                        mainVBox.getChildren().remove(csvPathSelection);
+//                    }
+//                });
+//
+//        return mainVBox;
+//    }
     private VBox createConfigFileSelection(){
         Label choiceBoxLabel = new Label("Choose configuration file");
         Button RefreshButton = new Button("\uD83D\uDD04");
@@ -159,42 +157,9 @@ public class ConfigurationWindow {
         errorMsg.setTextFill(Color.GREEN);
     }
 
-    private String getFullCsvFilePath() throws IllegalArgumentException{
-        String csvDirPath = csvDirectoryPathField.getText();
-        File directory = new File(csvDirPath);
-        if (!directory.isDirectory() || !directory.exists()) {
-            throw new IllegalArgumentException("Given directory for saving csv file is not valid");
-        }
-        String csvFileName = csvFileNameField.getText();
-        if (Objects.equals(csvFileName, "")){
-            throw new IllegalArgumentException("Csv file has to have a name");
-        }
-        String csvFilePath = csvDirPath + '/' + csvFileName + ".csv";
-        File csvFile = new File(csvFilePath);
-        if (csvFile.exists()){
-            throw new IllegalArgumentException("There already is file: " + csvFilePath);
-        }
-        return csvFilePath;
-    }
+
 
     private void attemptToCreateSimulation(String ConfigFileName) {
-        if (csvCheckBox.isSelected()){
-            try{
-                String csvFilePath = getFullCsvFilePath();
-                handleSimulationCreationResult(
-                        ParameterValidator.startNewSimulation(
-                                ConfigFileName,
-                                csvFilePath,
-                                epochCountSpinner.getValue(),
-                                epochDurationSpinner.getValue()
-                        )
-                );
-            }
-            catch (IllegalArgumentException e){
-                showError(e.getMessage());
-            }
-        }
-        else{
             handleSimulationCreationResult(
                     ParameterValidator.startNewSimulation(
                             ConfigFileName,
@@ -203,7 +168,7 @@ public class ConfigurationWindow {
                     )
             );
         }
-    }
+
 
     private void handleSimulationCreationResult(String creationResult){
         if (Objects.equals(creationResult, "")){
