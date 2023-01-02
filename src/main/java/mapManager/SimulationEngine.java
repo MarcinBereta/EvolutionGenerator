@@ -16,7 +16,6 @@ public class SimulationEngine implements Runnable {
     private List<AnimalMoveInteface> observers = new ArrayList<>();
     public boolean running = true;
 
-
     private Thread engineThread;
     private int genomPopularity[];
     public int mostPopularGen=0;
@@ -52,7 +51,7 @@ public class SimulationEngine implements Runnable {
                 for(int j = 0; j < mapSettings.genSize; j++){
                     genomPopularity[animal.gens.getAllGens()[j]] ++;
                 }
-                calculateDay();
+//                calculateDay();
                 System.out.println(animal.getPosition());
                 animalsList.add(animal);
             }
@@ -112,7 +111,9 @@ public class SimulationEngine implements Runnable {
         this.engineThread.start();
     }
 
-
+    public int mostPopularGen(){
+        return mostPopularGen;
+    }
     public int countAnimals() {
         return this.animalsList.size();
     }
@@ -123,29 +124,16 @@ public class SimulationEngine implements Runnable {
         }
         return (sum*1.0)/this.countAnimals();
     }
-    public void calculateDay() {
-        countLifeSpan();}
-    public double getAvgChildrenAmount(){
-        int sum = 0;
-        for (Animal animal : this.animalsList){
-            sum += animal.getChildrenCount();
-        }
-        return (sum*1.0)/this.countAnimals();
-    }
+
     public void stopSimulation() {
         this.running = false;
 
-    }
-    public void countLifeSpan(){
-        for (Animal animal : animalsList) {
-            animal.survivedDay();
-        }
     }
 
     public double getAvgLifeSpan(){
         int sum = 0;
         for (Animal animal : this.deadAnimals){
-            sum += animal.getLifeSpan();
+            sum += animal.getAge();
         }
         if(this.deadAnimals.size()>0)
             return (sum*1.0)/this.deadAnimals.size();

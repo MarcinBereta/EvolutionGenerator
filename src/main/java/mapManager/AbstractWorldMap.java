@@ -248,7 +248,7 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver, Abstr
     }
 
     public int getTotalGrassAmount() {
-        return this.totalGrassInJungle + this.totalGrassOutsideJungle;
+        return grass.size();
     }
 
     public LinkedList<Animal> getAnimalsAtPosition(Vector2d position){
@@ -257,4 +257,29 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver, Abstr
         }
         return new LinkedList<Animal>();
     }
+
+    public int getNumberOfEmptyFields() {
+        boolean[][] fields = new boolean[mapSettings.mapWidth+1][mapSettings.mapHeight+1];
+        int emptyFields = 0;
+
+        for (Vector2d position : grass.keySet()) {
+            if (position.x<=mapSettings.mapWidth+1 && position.y<=mapSettings.mapHeight+1 && position.x>=0 && position.y>=0){
+            fields[position.x][position.y] = true;
+        }}
+        for (Vector2d position : animals.keySet()) {
+            if (position.x<=mapSettings.mapWidth+1 && position.y<=mapSettings.mapHeight+1 && position.x>=0 && position.y>=0){
+            fields[position.x][position.y] = true;
+        }}
+
+        for (int i = 1; i < mapSettings.mapWidth; i++) {
+            for (int j = 1; j < mapSettings.mapHeight; j++) {
+                if (!fields[i][j]) {
+                    emptyFields++;
+                }
+            }
+        }
+
+        return emptyFields;
+    }
+
 }

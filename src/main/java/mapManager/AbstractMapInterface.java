@@ -18,7 +18,7 @@ public interface AbstractMapInterface {
     Vector2d correctPosition(Vector2d oldPosition, Vector2d newPosition, Animal animal);
     LinkedList<Animal> simulateDayPass();
     void dailyGrassChange();
-    void getVisualisation();
+//    void getVisualisation();
     int getTotalGrassAmount();
     LinkedList<Animal> getAnimalsAtPosition(Vector2d position);
 }

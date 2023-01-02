@@ -9,10 +9,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import mapElements.Vector2d;
 
@@ -29,28 +29,44 @@ public class InputConfigurationWindow {
 
     public InputConfigurationWindow(){
         Stage newWindow = new Stage();
-        newWindow.setTitle("Create new simulation configuration file");
-        HBox spacingBox = new HBox();
-        HBox.setHgrow(spacingBox, Priority.ALWAYS);
+        Image img = new Image("https://static.wixstatic.com/media/2cd43b_2373b379948d4e0cb910c593f7edb96e~mv2.png/v1/fill/w_637,h_800,al_c,q_90,enc_auto/2cd43b_2373b379948d4e0cb910c593f7edb96e~mv2.png");
+        newWindow.getIcons().add(img);
+        newWindow.setTitle("Evolution Generator");
+        Label titleLabel = new Label("File name: ");
+        fileNameInputField.setPadding(new Insets(0,0,0,5));
+
         HBox fileNameContainer = new HBox(
-                new Label("File name: "),
-                spacingBox,
+                titleLabel,
                 fileNameInputField
         );
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
         WorldParamType[] paramTypeValues = WorldParamType.values();
         HBox[] paramInputContainers = new HBox[paramTypeValues.length];
         for (int i = 0; i < paramTypeValues.length; i++){
             paramInputContainers[i] = createParamInput(paramTypeValues[i]);
+            gridPane.add(paramInputContainers[i], i % 2, i / 2);
         }
+
+        gridPane.add(new HBox(), 1, paramTypeValues.length / 2);
+
         Button submitButton = new Button("Create new configuration file");
         HBox.setHgrow(submitButton, Priority.ALWAYS);
         submitButton.setOnAction(event -> attemptToCreateNewFile());
         VBox container = new VBox(fileNameContainer);
-        container.getChildren().addAll(paramInputContainers);
-        container.getChildren().addAll(errorMsg, submitButton);
+        Label infoLabel = new Label("Settings meaning: ");
+        Label infoLabel1 = new Label("Map variant: 0 -> Earth, 1 -> Hell");
+        Label infoLabel2 = new Label("Grass variant: 0 -> Toxic, 1 -> Equator");
+        Label infoLabel3 = new Label("Animal variant: 0 -> Fullpredestination, 1 -> Bitofmaddness");
+        Label infoLabel4 = new Label("Mutation variant: 0 -> Smallcorrection, 1 -> Fullrandom");
+        container.getChildren().addAll(gridPane);
+        container.getChildren().addAll(errorMsg, submitButton, infoLabel,infoLabel1, infoLabel2, infoLabel3, infoLabel4);
+
         container.setSpacing(15);
         container.setPadding(new Insets(10,10,10, 10));
         container.setAlignment(Pos.CENTER);
+        container.setBackground(new Background(new BackgroundFill(Color.LIGHTSTEELBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
         newWindow.setScene(new Scene(container));
 
         newWindow.show();
@@ -82,11 +98,13 @@ public class InputConfigurationWindow {
     private void showError(String message){
         errorMsg.setText(message);
         errorMsg.setTextFill(Color.RED);
+        errorMsg.setFont(new Font(14));
     }
 
     private void showSuccess(String message){
         errorMsg.setText(message);
         errorMsg.setTextFill(Color.GREEN);
+        errorMsg.setFont(new Font(14));
     }
 
     private void attemptToCreateNewFile(){

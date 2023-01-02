@@ -13,7 +13,7 @@ public class ExportData {
             throws IOException {
         FileWriter fileWriter = new FileWriter("./CSVFiles/" + filename);
         PrintWriter printWriter = new PrintWriter(fileWriter);
-        printWriter.print("Day, AnimalsAmount ,PlantsAmount, AvgEnergy, AvgChildren, AvgLifeSpan\r\n");
+        printWriter.print("Day, AnimalsAmount ,PlantsAmount, AvgEnergy, AvgLifeSpan, FreePlaces, MostPopularGen\r\n");
 
         int dataLength = chartSeriesArr.get(0).getData().size();
 

@@ -12,6 +12,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -24,10 +25,7 @@ import mapElements.Vector2d;
 import mapManager.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 public class SimulationWindow implements AnimalMoveInteface{
 
@@ -42,15 +40,18 @@ public class SimulationWindow implements AnimalMoveInteface{
     private final XYChart.Series<Number, Number> animalsChartSeriesW1 = new XYChart.Series<>();
     private final XYChart.Series<Number, Number> plantsChartSeriesW1 = new XYChart.Series<>();
     private final XYChart.Series<Number, Number> avgEnergyChartSeriesW1 = new XYChart.Series<>();
-    private final XYChart.Series<Number, Number> avgKidsChartSeriesW1 = new XYChart.Series<>();
     private final XYChart.Series<Number, Number> avgLifeSpanChartSeriesW1 = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> freePlacesChartSeriesW1 = new XYChart.Series<>();
+
+    private final XYChart.Series<Number, Number> mostPopularGenChartSeriesW1 = new XYChart.Series<>();
     private ArrayList<XYChart.Series<Number, Number>> chartSeriesArrW1;
     private final GridPane animalsContainer = new GridPane();
+    private final GridPane genomeContainer = new GridPane();
     private int DayCount = 0;
     Map<Circle, Vector2d> positions = new HashMap<>();
 
     private final LinkedList<Animal> animalsToObserve = new LinkedList<>();
-
+    private final LinkedList<Animal> genomeToObserve = new LinkedList<>();
     public SimulationWindow(Map<WorldParamType, Object> worldParams){
 
         for(Map.Entry<WorldParamType, Object> entry : worldParams.entrySet()){
@@ -124,12 +125,6 @@ public class SimulationWindow implements AnimalMoveInteface{
 
         Stage newWindow = new Stage();
         newWindow.setTitle("New Scene");
-//        TextField textField = new TextField("Enter your name here");
-//        Button button = new Button("OK");
-//        VBox container = new VBox(textField, button);
-//        container.setSpacing(15);
-//        container.setAlignment(Pos.CENTER);
-//        this.map = new Hell(mapSettings);
         this.engine = new SimulationEngine(map, mapSettings);
         engine.addObserver(this);
         Thread simulationEngineThread = new Thread(engine);
@@ -189,11 +184,12 @@ public class SimulationWindow implements AnimalMoveInteface{
 
         HBox legendContainer = new HBox();
         animalsContainer.setPadding(new Insets(10, 40, 0, 0));
+        genomeContainer.setPadding(new Insets(30, 40, 0, 0));
         legendContainer.getChildren().add(legendBox);
         VBox mainContainer = new VBox();
         legendBox.setPadding(new Insets(200,0,0,10));
 
-        mainContainer.getChildren().addAll(startStopButtons, newanimalLabel,animalsContainer);
+        mainContainer.getChildren().addAll(startStopButtons, newanimalLabel,animalsContainer, genomeContainer);
         HBox hBox = new HBox(this.gridPane, legendBox,mainContainer);
         Scene scene = new Scene(hBox, 1300, 800);
 
@@ -212,16 +208,24 @@ public class SimulationWindow implements AnimalMoveInteface{
         });
 
         exportDataButton.setOnAction(ev -> {
-            Alert alertSuccess = new Alert(Alert.AlertType.INFORMATION, "Successfully exported data to ./CSVFiles/dataWorld1.csv");
-            alertSuccess.setTitle("Success!");
-            Alert alertFail = new Alert(Alert.AlertType.INFORMATION, "Could not export the chart data. Check console for error log.");
-            alertFail.setTitle("Failure!");
-            try {
-                this.exportData.exportDataFromChartSeries(this.chartSeriesArrW1, "dataWorld1.csv");
-                alertSuccess.show();
-            } catch (IOException ex) {
-                System.out.println("Could not export the chart data. -> " + ex);
-                alertFail.show();
+            TextInputDialog dialog = new TextInputDialog("dataWorld1.csv");
+            dialog.setTitle("Enter file name");
+            dialog.setHeaderText("Enter the name of the file to export the data to:");
+            dialog.setContentText("File name:");
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                String fileName = result.get();
+                Alert alertSuccess = new Alert(Alert.AlertType.INFORMATION, "Successfully exported data to ./CSVFiles/" + fileName);
+                alertSuccess.setTitle("Success!");
+                Alert alertFail = new Alert(Alert.AlertType.INFORMATION, "Could not export the chart data. Check console for error log.");
+                alertFail.setTitle("Failure!");
+                try {
+                    this.exportData.exportDataFromChartSeries(this.chartSeriesArrW1, fileName);
+                    alertSuccess.show();
+                } catch (IOException ex) {
+                    System.out.println("Could not export the chart data. -> " + ex);
+                    alertFail.show();
+                }
             }
         });
 
@@ -234,22 +238,25 @@ public class SimulationWindow implements AnimalMoveInteface{
         this.animalsChartSeriesW1.setName("Total animals");
         this.plantsChartSeriesW1.setName("Total plants");
         this.avgEnergyChartSeriesW1.setName("AVG Energy");
-        this.avgKidsChartSeriesW1.setName("AVG Children of Alive Animals");
         this.avgLifeSpanChartSeriesW1.setName("AVG Lifespan of Dead Animals");
+        this.freePlacesChartSeriesW1.setName("Total free places");
+        this.mostPopularGenChartSeriesW1.setName("Most popular gen");
 
         lineChartW1.getData().add(this.animalsChartSeriesW1);
         lineChartW1.getData().add(this.plantsChartSeriesW1);
         lineChartW1.getData().add(this.avgEnergyChartSeriesW1);
-        lineChartW1.getData().add(this.avgKidsChartSeriesW1);
         lineChartW1.getData().add(this.avgLifeSpanChartSeriesW1);
+        lineChartW1.getData().add(this.freePlacesChartSeriesW1);
+        lineChartW1.getData().add(this.mostPopularGenChartSeriesW1);
 
         this.chartSeriesArrW1 = new ArrayList<>() {
             {
                 add(animalsChartSeriesW1);
                 add(plantsChartSeriesW1);
                 add(avgEnergyChartSeriesW1);
-                add(avgKidsChartSeriesW1);
                 add(avgLifeSpanChartSeriesW1);
+                add(freePlacesChartSeriesW1);
+                add(mostPopularGenChartSeriesW1);
             }
         };
 
@@ -268,15 +275,18 @@ public class SimulationWindow implements AnimalMoveInteface{
             for(int j = 0; j < yMax; j++){
                 if(i == 0 && j == 0){
                     Label label = new Label("X/Y");
+                    label.setFont(new Font(5));
                     gridPane.add(label, i, j);
                     GridPane.setHalignment(label, HPos.CENTER);
                 }else if(i == 0){
                     Label label = new Label(Integer.toString(j));
+                    label.setFont(new Font(5));
                     gridPane.add(label, i, j);
                     GridPane.setHalignment(label, HPos.CENTER);
                 }
                 else if(j == 0){
                     Label label = new Label(Integer.toString(i));
+                    label.setFont(new Font(5));
                     gridPane.add(label, i, j);
                     GridPane.setHalignment(label, HPos.CENTER);
 
@@ -285,16 +295,15 @@ public class SimulationWindow implements AnimalMoveInteface{
 
                     int newx = 0 + i - 1;
                     int newy = yMax - j - 1;
-
                     VBox box = new VBox();
                     Circle circle = new Circle();
                     positions.put(circle, new Vector2d(newx, newy));
-                    String[] guiType = map.getVisualisation(new Vector2d(newx, newy),positions,  circle );
+                    String[] guiType = map.getVisualisation(new Vector2d(newx, newy),positions, circle );
                     circle.setFill(Color.web(guiType[0]));
                     if (mapHeight> mapWidth){
-                    circle.setRadius(300/((mapHeight)));}
+                        circle.setRadius(375/(mapHeight));}
                     else{
-                        circle.setRadius(300/((mapWidth)));
+                        circle.setRadius(375/(mapWidth));
                     }
                     circle.setOnMouseClicked(event -> {
                         System.out.println("Clicked on " + new Vector2d(newx, newy));
@@ -304,13 +313,15 @@ public class SimulationWindow implements AnimalMoveInteface{
                         }
                         this.generateList();
                     });
+
                     if (mapHeight> mapWidth){
-                    box.setPrefWidth(600/((mapWidth)));
-                    box.setPrefHeight(600/((mapWidth)));}
+                        box.setPrefWidth(750/(mapWidth));
+                        box.setPrefHeight(750/(mapWidth));}
                     else{
-                        box.setPrefWidth(600/((mapHeight)));
-                        box.setPrefHeight(600/((mapHeight)));
+                        box.setPrefWidth(750/(mapHeight));
+                        box.setPrefHeight(750/(mapHeight));
                     }
+
                     box.getChildren().add(circle);
                     this.gridPane.add(box, i, j, 1, 1);
                     GridPane.setHalignment(box, HPos.CENTER);
@@ -320,22 +331,21 @@ public class SimulationWindow implements AnimalMoveInteface{
         }
         for(int i = 0; i < yMax; i++){
             if (mapHeight > mapWidth){
-            this.gridPane.getRowConstraints().add(new RowConstraints(600/((mapHeight))));}
+                this.gridPane.getRowConstraints().add(new RowConstraints(750/(mapHeight)));}
             else{
-                this.gridPane.getRowConstraints().add(new RowConstraints(600/((mapWidth))));
+                this.gridPane.getRowConstraints().add(new RowConstraints(750/(mapWidth)));
             }
         }
         for(int i = 0; i < xMax; i++){
             if (mapHeight > mapWidth){
-                this.gridPane.getColumnConstraints().add(new ColumnConstraints(600/((mapHeight))));}
+                this.gridPane.getColumnConstraints().add(new ColumnConstraints(750/(mapHeight)));}
             else{
-                this.gridPane.getColumnConstraints().add(new ColumnConstraints(600/((mapWidth))));
+                this.gridPane.getColumnConstraints().add(new ColumnConstraints(750/(mapWidth)));
             };
         }
         this.gridPane.setGridLinesVisible(true);
         this.generateList();
     }
-
     private void generateList(){
         System.out.println(animalsToObserve.size());
         this.animalsContainer.getChildren().clear();
@@ -349,7 +359,6 @@ public class SimulationWindow implements AnimalMoveInteface{
             this.animalsContainer.add(animalLabel, rowNumber, 0);
         }
     }
-
 
     public void createMap(){
         this.gridPane.getChildren().clear();
@@ -372,8 +381,9 @@ public class SimulationWindow implements AnimalMoveInteface{
             this.animalsChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount, this.engine.countAnimals()));
             this.plantsChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount, this.map.getTotalGrassAmount()));
             this.avgEnergyChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount, this.engine.getAvgEnergy()));
-            this.avgKidsChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount, this.engine.getAvgChildrenAmount()));
             this.avgLifeSpanChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount, this.engine.getAvgLifeSpan()));
+            this.freePlacesChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount,this.map.getNumberOfEmptyFields()));
+            this.mostPopularGenChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount,this.engine.mostPopularGen()));
         });
     }
 
