@@ -347,7 +347,6 @@ public class SimulationWindow implements AnimalMoveInteface{
         this.generateList();
     }
     private void generateList(){
-        System.out.println(animalsToObserve.size());
         this.animalsContainer.getChildren().clear();
         this.animalsContainer.getRowConstraints().clear();
         this.animalsContainer.getColumnConstraints().clear();
@@ -357,7 +356,10 @@ public class SimulationWindow implements AnimalMoveInteface{
             animalLabel.setFont(new Font("Arial", 14));
             animalLabel.setTextFill(Color.PURPLE);
             this.animalsContainer.add(animalLabel, rowNumber, 0);
+            rowNumber++;
         }
+
+        this.animalsContainer.add(new Label("Most popular gen: " + engine.getMostPopularGen()), rowNumber, 0);
     }
 
     public void createMap(){

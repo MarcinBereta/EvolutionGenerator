@@ -79,7 +79,7 @@ public class SimulationEngine implements Runnable {
             i++;
         }
     }
-    public void getMostPopularGen(){
+    public String getMostPopularGen(){
         int max = 0;
         for(int i = 0; i < mapSettings.genSize; i++){
             if(genomPopularity[i] > max){
@@ -87,6 +87,7 @@ public class SimulationEngine implements Runnable {
                 mostPopularGen = i;
             }
         }
+        return Integer.toString(mostPopularGen);
     }
 
     private void updateMap() {
