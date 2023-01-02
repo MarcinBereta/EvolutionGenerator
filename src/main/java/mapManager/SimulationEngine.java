@@ -14,13 +14,12 @@ public class SimulationEngine implements Runnable {
     protected LinkedList<Animal> animalsList = new LinkedList<>();
     protected LinkedList<Animal> deadAnimals = new LinkedList<>();
     private List<AnimalMoveInteface> observers = new ArrayList<>();
-    private Animal testAnimal;
-    private boolean firstAnimal = true;
-    private Vector2d or;
     public boolean running = true;
 
 
     private Thread engineThread;
+    private int genomPopularity[];
+    public int mostPopularGen=0;
 
     public SimulationEngine(AbstractWorldMap map, MapSettings mapSettings) {
         this.map = map;
@@ -31,8 +30,14 @@ public class SimulationEngine implements Runnable {
                     mapSettings, null);
             animalsList.add(animal);
             map.setStartingAnimal(animal);
-
         }
+        genomPopularity = new int[mapSettings.genSize];
+        for(Animal myanimal : animalsList){
+            for(int i = 0; i < mapSettings.genSize; i++){
+                genomPopularity[myanimal.gens.getAllGens()[i]] ++;
+            }
+        }
+        getMostPopularGen();
     }
 
     public void run() {
@@ -42,21 +47,15 @@ public class SimulationEngine implements Runnable {
             for (Animal animal : animalsList) {
                 animal.move();
             }
-
             LinkedList<Animal> newAnimals = map.simulateDayPass();
-
-//           updateMap();
             for (Animal animal : newAnimals) {
-                if (firstAnimal) {
-                    testAnimal = animal;
-                    firstAnimal = false;
-                    or = animal.position;
+                for(int j = 0; j < mapSettings.genSize; j++){
+                    genomPopularity[animal.gens.getAllGens()[j]] ++;
                 }
                 calculateDay();
                 System.out.println(animal.getPosition());
                 animalsList.add(animal);
             }
-//           animalsList.addAll(newAnimals);
             if (animalsList.size() < 1) {
                 System.out.println("Koniec gry");
                 break;
@@ -64,19 +63,30 @@ public class SimulationEngine implements Runnable {
             LinkedList<Animal> nolivingAnimals = new LinkedList<>();
             for (Animal animal : animalsList) {
                 if (animal.isDead()) {
+                    for(int j = 0; j < mapSettings.genSize; j++){
+                        genomPopularity[animal.gens.getAllGens()[j]] --;
+                    }
                     nolivingAnimals.add(animal);
-//                   System.out.println("DEAD "+ animal.getPosition());
                 }
             }
-//           updateMap();
             for (Animal animal : nolivingAnimals) {
                 map.removeDeadAnimal(animal);
             }
+            getMostPopularGen();
             deadAnimals.addAll(nolivingAnimals);
             animalsList.removeAll(nolivingAnimals);
             map.dailyGrassChange();
             updateMap();
             i++;
+        }
+    }
+    public void getMostPopularGen(){
+        int max = 0;
+        for(int i = 0; i < mapSettings.genSize; i++){
+            if(genomPopularity[i] > max){
+                max = genomPopularity[i];
+                mostPopularGen = i;
+            }
         }
     }
 

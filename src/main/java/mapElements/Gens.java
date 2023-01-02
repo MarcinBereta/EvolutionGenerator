@@ -130,6 +130,10 @@ public class Gens {
         }
     }
 
+    public int[] getAllGens() {
+        return gens;
+    }
+
     @Override
     public String toString() {
 
