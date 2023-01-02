@@ -5,6 +5,7 @@ import mapElements.MapDirection;
 import mapElements.Vector2d;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,8 +18,8 @@ public class SimulationEngine implements Runnable {
     public boolean running = true;
 
     private Thread engineThread;
-    private int genomPopularity[];
-    public int mostPopularGen=0;
+    private LinkedList<String> genomPopularity= new LinkedList<>();
+    public String mostPopularGen="";
 
     public SimulationEngine(AbstractWorldMap map, MapSettings mapSettings) {
         this.map = map;
@@ -30,11 +31,9 @@ public class SimulationEngine implements Runnable {
             animalsList.add(animal);
             map.setStartingAnimal(animal);
         }
-        genomPopularity = new int[mapSettings.genSize];
+
         for(Animal myanimal : animalsList){
-            for(int i = 0; i < mapSettings.genSize; i++){
-                genomPopularity[myanimal.gens.getAllGens()[i]] ++;
-            }
+            genomPopularity.add(Arrays.toString(myanimal.gens.getAllGens()));
         }
         getMostPopularGen();
     }
@@ -48,10 +47,7 @@ public class SimulationEngine implements Runnable {
             }
             LinkedList<Animal> newAnimals = map.simulateDayPass();
             for (Animal animal : newAnimals) {
-                for(int j = 0; j < mapSettings.genSize; j++){
-                    genomPopularity[animal.gens.getAllGens()[j]] ++;
-                }
-//                calculateDay();
+                genomPopularity.add(Arrays.toString(animal.gens.getAllGens()));
                 System.out.println(animal.getPosition());
                 animalsList.add(animal);
             }
@@ -62,9 +58,16 @@ public class SimulationEngine implements Runnable {
             LinkedList<Animal> nolivingAnimals = new LinkedList<>();
             for (Animal animal : animalsList) {
                 if (animal.isDead()) {
-                    for(int j = 0; j < mapSettings.genSize; j++){
-                        genomPopularity[animal.gens.getAllGens()[j]] --;
+                    String removal = Arrays.toString(animal.gens.getAllGens());
+                    int index = 0;
+                    for(String gen : genomPopularity){
+                        if(gen.equals(removal)){
+                            genomPopularity.remove(index);
+                            break;
+                        }
+                        index++;
                     }
+
                     nolivingAnimals.add(animal);
                 }
             }
@@ -81,13 +84,21 @@ public class SimulationEngine implements Runnable {
     }
     public String getMostPopularGen(){
         int max = 0;
-        for(int i = 0; i < mapSettings.genSize; i++){
-            if(genomPopularity[i] > max){
-                max = genomPopularity[i];
-                mostPopularGen = i;
+        String[] tempArr = new String[genomPopularity.size()];
+        tempArr = genomPopularity.toArray(tempArr);
+        for(int i = 0; i < tempArr.length; i++){
+            int count = 0;
+            for(int j = 0; j < tempArr.length; j++){
+                if(tempArr[i].equals(tempArr[j])){
+                    count++;
+                }
+            }
+            if(count > max){
+                max = count;
+                mostPopularGen = tempArr[i];
             }
         }
-        return Integer.toString(mostPopularGen);
+        return mostPopularGen;
     }
 
     private void updateMap() {
@@ -112,9 +123,16 @@ public class SimulationEngine implements Runnable {
         this.engineThread.start();
     }
 
-    public int mostPopularGen(){
-        return mostPopularGen;
+    public LinkedList<String> animalsWithGenom(){
+        LinkedList<String> animalsWithGenom = new LinkedList<>();
+        for(Animal animal : animalsList){
+            if(Arrays.toString(animal.gens.getAllGens()).equals(mostPopularGen)){
+                animalsWithGenom.add("Animal at position " + animal.getPosition() + "\n");
+            }
+        }
+        return animalsWithGenom;
     }
+
     public int countAnimals() {
         return this.animalsList.size();
     }

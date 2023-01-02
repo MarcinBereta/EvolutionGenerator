@@ -360,6 +360,9 @@ public class SimulationWindow implements AnimalMoveInteface{
         }
 
         this.animalsContainer.add(new Label("Most popular gen: " + engine.getMostPopularGen()), rowNumber, 0);
+        for(String myAnimal : engine.animalsWithGenom()){
+            this.animalsContainer.add(new Label(myAnimal), rowNumber, 0);
+        }
     }
 
     public void createMap(){
@@ -385,7 +388,7 @@ public class SimulationWindow implements AnimalMoveInteface{
             this.avgEnergyChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount, this.engine.getAvgEnergy()));
             this.avgLifeSpanChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount, this.engine.getAvgLifeSpan()));
             this.freePlacesChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount,this.map.getNumberOfEmptyFields()));
-            this.mostPopularGenChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount,this.engine.mostPopularGen()));
+//            this.mostPopularGenChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount,this.engine.mostPopularGen()));
         });
     }
 
