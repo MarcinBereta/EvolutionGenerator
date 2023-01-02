@@ -184,6 +184,7 @@ public class SimulationWindow implements AnimalMoveInteface{
 
         HBox legendContainer = new HBox();
         animalsContainer.setPadding(new Insets(10, 40, 0, 0));
+        animalsContainer.setMinHeight(400);
         genomeContainer.setPadding(new Insets(30, 40, 0, 0));
         legendContainer.getChildren().add(legendBox);
         VBox mainContainer = new VBox();
@@ -352,16 +353,18 @@ public class SimulationWindow implements AnimalMoveInteface{
         this.animalsContainer.getColumnConstraints().clear();
         int rowNumber= 0;
         for(Animal myAnimal: animalsToObserve){
-            Label animalLabel = new Label("Animal nr " + rowNumber + " at position " +myAnimal.getPosition() + " at age " +myAnimal.getAge() + " with  " + myAnimal.getEnergy() + " energy and  " + myAnimal.getChildrenCount() + " children " + (myAnimal.isDead()? " is dead" : " is alive"));
+            Label animalLabel = new Label("Animal nr " + rowNumber + " at position " +myAnimal.getPosition() + " at age " +myAnimal.getAge() + " with  " + myAnimal.getEnergy() + " energy and  " + myAnimal.getChildrenCount() + " children " + (myAnimal.isDead()? " is dead" : " is alive"+ "\n"));
             animalLabel.setFont(new Font("Arial", 14));
             animalLabel.setTextFill(Color.PURPLE);
             this.animalsContainer.add(animalLabel, rowNumber, 0);
             rowNumber++;
         }
 
-        this.animalsContainer.add(new Label("Most popular gen: " + engine.getMostPopularGen()), rowNumber, 0);
+        this.animalsContainer.add(new Label("Most popular gen: " + engine.getMostPopularGen() + "\n"), rowNumber, 0);
+        rowNumber++;
         for(String myAnimal : engine.animalsWithGenom()){
             this.animalsContainer.add(new Label(myAnimal), rowNumber, 0);
+            rowNumber ++;
         }
     }
 
