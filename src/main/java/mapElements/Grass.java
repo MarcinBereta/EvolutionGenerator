@@ -1,6 +1,6 @@
 package mapElements;
 
-public class Grass implements IMapElement {
+public class Grass implements IMapElement, IGrass {
 
     private Vector2d position;
     public Grass(Vector2d position){
@@ -16,7 +16,4 @@ public class Grass implements IMapElement {
         return "grass";
     }
 
-    public String getView(){
-        return "src/main/resources/grass.png";
-    }
 }

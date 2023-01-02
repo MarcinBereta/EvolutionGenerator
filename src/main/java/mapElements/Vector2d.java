@@ -52,13 +52,7 @@ public class Vector2d {
         return new Vector2d(-this.x, -this.y);
     }
 
-    public int getX() {
-        return this.x;
-    }
 
-    public int getY() {
-        return this.y;
-    }
 
     @Override
     public int hashCode() {

@@ -2,18 +2,19 @@ package gui;
 
 import Configuration.Config;
 import Configuration.ParameterValidator;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -27,10 +28,7 @@ public class ConfigurationWindow {
     private final ChoiceBox<String> choiceBox =
             new ChoiceBox<>(FXCollections.observableArrayList(listFiles(Config.CONFIG_DIR_PATH)));
     private final Label errorMsg;
-    private final CheckBox csvCheckBox = new CheckBox("Save simulation statistics in CSV file");
 
-    private final TextField csvFileNameField = new TextField();
-    private VBox csvPathSelection;
     private final Spinner<Integer> epochCountSpinner = new Spinner<>(1, 10000, 100);
     private final Spinner<Double> epochDurationSpinner = new Spinner<>(0.1, 5, 0.5, 0.1);
     public ConfigurationWindow(){
@@ -39,7 +37,6 @@ public class ConfigurationWindow {
         inputWindow.getIcons().add(img);
         inputWindow.setTitle("Configuration window");
         VBox configFileSelectionVbox = createConfigFileSelection();
-//        VBox csvBox = createCSVInputField(inputWindow);
         errorMsg = new Label();
         errorMsg.setTextFill(Color.RED);
         Button submitButton = new Button("Create New Simulation");
@@ -87,39 +84,6 @@ public class ConfigurationWindow {
         return mainBox;
     }
 
-//    private VBox createCSVInputField(Stage mainConfigWindow){
-//        //Upper box
-//        Label textFieldLabel = new Label("Select Directory: ");
-//        Button browseButton = new Button("Browse");
-//        HBox upperSpacingBox = new HBox();
-//        HBox.setHgrow(upperSpacingBox, Priority.ALWAYS);
-//        browseButton.setOnAction(event -> {
-//            DirectoryChooser directoryChooser = new DirectoryChooser();
-//            directoryChooser.setTitle("Select Directory");
-//            File directory = directoryChooser.showDialog(mainConfigWindow);
-//
-//        });
-//        HBox csvHBoxUpper = new HBox(textFieldLabel, upperSpacingBox, browseButton);
-//        HBox lowerSpacingBox = new HBox();
-//        HBox.setHgrow(lowerSpacingBox, Priority.ALWAYS);
-//        HBox csvHBoxLower = new HBox(new Label ("File name: "), lowerSpacingBox, csvFileNameField);
-//        csvPathSelection = new VBox(csvHBoxUpper, csvHBoxLower);
-//        csvPathSelection.setAlignment(Pos.CENTER);
-//        csvPathSelection.setSpacing(10);
-//        VBox mainVBox = new VBox(csvCheckBox);
-//        mainVBox.setAlignment(Pos.CENTER);
-//        mainVBox.setSpacing(20);
-//        csvCheckBox.selectedProperty().addListener(
-//                (ObservableValue <? extends Boolean> ov, Boolean oldVal, Boolean newVal) -> {
-//                    if (!oldVal && newVal){
-//                        mainVBox.getChildren().add(csvPathSelection);
-//                    } else if (!newVal && oldVal){
-//                        mainVBox.getChildren().remove(csvPathSelection);
-//                    }
-//                });
-//
-//        return mainVBox;
-//    }
     private VBox createConfigFileSelection(){
         Label choiceBoxLabel = new Label("Choose configuration file");
         Button RefreshButton = new Button("\uD83D\uDD04");
@@ -156,7 +120,6 @@ public class ConfigurationWindow {
         errorMsg.setText("Successfully created new simulation");
         errorMsg.setTextFill(Color.GREEN);
     }
-
 
 
     private void attemptToCreateSimulation(String ConfigFileName) {

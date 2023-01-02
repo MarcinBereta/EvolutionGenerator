@@ -2,8 +2,6 @@ package mapElements;
 
 import mapManager.MapSettings;
 
-import java.util.Map;
-
 public class Gens {
     private int[] gens;
     private int genIndex;
@@ -62,7 +60,7 @@ public class Gens {
     }
 
     private void getRandomizeGens(int[] newgens){
-        int gensToChange = (int)(Math.random()*newgens.length);
+        int gensToChange = this.mapSettings.minGens + (int)(Math.random()*((this.mapSettings.maxGens - this.mapSettings.minGens) + 1));
         int gensToChangeIndexes[] = new int[gensToChange];
         int genCounter = 0;
         while(genCounter < gensToChange){
@@ -130,14 +128,6 @@ public class Gens {
         for(int i = 0; i < gens.length; i++){
             this.gens[i] = (int)(Math.random()*this.gens.length);
         }
-    }
-
-    public int[] getAllGens(){
-        return gens;
-    }
-
-    public int getActiveGen(){
-        return gens[genIndex];
     }
 
     @Override

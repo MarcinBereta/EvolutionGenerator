@@ -159,47 +159,47 @@ public class IWorldMap implements IPositionChangeObserver{
         newAnimals.add(animal);
     }
 
-    public void removeDeadAnimals() throws InvalidObjectException {
-        if(animalsList.size() == 0){
-            throw new InvalidObjectException("No animals left");
-        }
-        List<Animal> AnimalsToRemove = new LinkedList<>();
-        for(Animal animal : animalsList){
-            if(animal.isDead()){
-                animals.get(animal.getPosition()).remove(animal);
-                animalHistoryList.add(animal);
-                dieSet.remove(fieldHistory.get(animal.getPosition()));
-                fieldHistory.get(animal.getPosition()).increaseDeathCount();
-                dieSet.add(fieldHistory.get(animal.getPosition()));
-                AnimalsToRemove.add(animal);
-            }
-        }
-        for(Animal animal : AnimalsToRemove){
-            animalsList.remove(animal);
-        }
-    }
+//    public void removeDeadAnimals() throws InvalidObjectException {
+//        if(animalsList.size() == 0){
+//            throw new InvalidObjectException("No animals left");
+//        }
+//        List<Animal> AnimalsToRemove = new LinkedList<>();
+//        for(Animal animal : animalsList){
+//            if(animal.isDead()){
+//                animals.get(animal.getPosition()).remove(animal);
+//                animalHistoryList.add(animal);
+//                dieSet.remove(fieldHistory.get(animal.getPosition()));
+//                fieldHistory.get(animal.getPosition()).increaseDeathCount();
+//                dieSet.add(fieldHistory.get(animal.getPosition()));
+//                AnimalsToRemove.add(animal);
+//            }
+//        }
+//        for(Animal animal : AnimalsToRemove){
+//            animalsList.remove(animal);
+//        }
+//    }
 
-    public Vector2d correctPosition(Vector2d oldPosition, Vector2d newPosition, Animal animal) {
-        if (newPosition.x >= mapWidth || newPosition.x <= 0) {
-            if (edgeType == 0) {
-                newPosition = new Vector2d(newPosition.x == 0? mapHeight -1: 0, newPosition.y);
-            } else {
-                newPosition = new Vector2d((int)Math.random() * mapWidth, (int)Math.random() * mapHeight);
-                animal.changeEnergy(-dayCost);
-            }
-        }
-        else if(newPosition.y >= mapHeight || newPosition.y <= 0) {
-            if (edgeType == 0) {
-                newPosition = oldPosition;
-                MapDirection newDirection = animal.getOrientation();
-                animal.updateDirection(newDirection== MapDirection.NORTH ? MapDirection.SOUTH : MapDirection.NORTH);
-            } else {
-                newPosition = new Vector2d((int)Math.random() * mapWidth, (int)Math.random() * mapHeight);
-                animal.changeEnergy(-dayCost);
-            }
-        }
-        return newPosition;
-    }
+//    public Vector2d correctPosition(Vector2d oldPosition, Vector2d newPosition, Animal animal) {
+//        if (newPosition.x >= mapWidth || newPosition.x <= 0) {
+//            if (edgeType == 0) {
+//                newPosition = new Vector2d(newPosition.x == 0? mapHeight -1: 0, newPosition.y);
+//            } else {
+//                newPosition = new Vector2d((int)Math.random() * mapWidth, (int)Math.random() * mapHeight);
+//                animal.changeEnergy(-dayCost);
+//            }
+//        }
+//        else if(newPosition.y >= mapHeight || newPosition.y <= 0) {
+//            if (edgeType == 0) {
+//                newPosition = oldPosition;
+//                MapDirection newDirection = animal.getOrientation();
+//                animal.updateDirection(newDirection== MapDirection.NORTH ? MapDirection.SOUTH : MapDirection.NORTH);
+//            } else {
+//                newPosition = new Vector2d((int)Math.random() * mapWidth, (int)Math.random() * mapHeight);
+//                animal.changeEnergy(-dayCost);
+//            }
+//        }
+//        return newPosition;
+//    }
 
 
     public static Comparator<Animal> animalComparator = new Comparator<Animal>() {
@@ -226,68 +226,68 @@ public class IWorldMap implements IPositionChangeObserver{
             }
         }
     };
-    public void simulateDayPass() {
-        for(ArrayList<Animal> animalList: animals.values()){
-            if(animalList.size() > 0){
-                animalList.sort(animalComparator);
-                Animal strongestAnimal = animalList.get(0);
-                if(grass.containsKey(strongestAnimal.getPosition())){
-                    strongestAnimal.changeEnergy(plantProfit);
-                    if(jungleType == 1){
-                        FieldHistory field =  fieldHistory.remove(strongestAnimal.getPosition());
-                        dieSet.remove(field);
-                        field.increaseDeathCount();
-                        fieldHistory.put(strongestAnimal.getPosition(), field);
-                        dieSet.add(field);
-                        junglePossible.remove(new Grass(strongestAnimal.getPosition()));
-                        junglePossible.add(new Grass(dieSet.first().getPosition()));
-                    }
+//    public void simulateDayPass() {
+//        for(ArrayList<Animal> animalList: animals.values()){
+//            if(animalList.size() > 0){
+//                animalList.sort(animalComparator);
+//                Animal strongestAnimal = animalList.get(0);
+//                if(grass.containsKey(strongestAnimal.getPosition())){
+//                    strongestAnimal.changeEnergy(plantProfit);
+//                    if(jungleType == 1){
+//                        FieldHistory field =  fieldHistory.remove(strongestAnimal.getPosition());
+//                        dieSet.remove(field);
+//                        field.increaseDeathCount();
+//                        fieldHistory.put(strongestAnimal.getPosition(), field);
+//                        dieSet.add(field);
+//                        junglePossible.remove(new Grass(strongestAnimal.getPosition()));
+//                        junglePossible.add(new Grass(dieSet.first().getPosition()));
+//                    }
+//
+//                }
+//                LinkedList <Animal> animalReproduction = new LinkedList<>();
+//                for(Animal animal1: animalList){
+//                    if(animal1.getEnergy() >= copulationEnergy){
+//                        animalReproduction.add(animal1);
+//                    }
+//                }
+//                while (animalReproduction.size() >= 2){
+//                    Animal animal1 = animalReproduction.remove(0);
+//                    Animal animal2 = animalReproduction.remove(0);
+//                    Animal child = animal1.copulate(animal2);
+//                    child.addObserver(this);
+//                    animals.get(animal1.getPosition()).add(child);
+//                }
+//
+//            }
+//        }
+//    }
 
-                }
-                LinkedList <Animal> animalReproduction = new LinkedList<>();
-                for(Animal animal1: animalList){
-                    if(animal1.getEnergy() >= copulationEnergy){
-                        animalReproduction.add(animal1);
-                    }
-                }
-                while (animalReproduction.size() >= 2){
-                    Animal animal1 = animalReproduction.remove(0);
-                    Animal animal2 = animalReproduction.remove(0);
-                    Animal child = animal1.copulate(animal2);
-                    child.addObserver(this);
-                    animals.get(animal1.getPosition()).add(child);
-                }
+//    public void dailyGrassChange(){
+//        for(Grass myGrass: grass.values()){
+//            Vector2d myGrassPos = myGrass.getPosition();
+//            ArrayList<Animal> animalsAtPos = animals.get(myGrassPos);
+//            if(animalsAtPos != null){
+//                if(animalsAtPos.size() >= 1){
+//                    grass.remove(myGrass);
+//                }
+//            }
+//        }
+//        for(int i = 0; i < dailyGrass; i++){
+//            addGrass();
+//        }
+//    }
 
-            }
-        }
-    }
-
-    public void dailyGrassChange(){
-        for(Grass myGrass: grass.values()){
-            Vector2d myGrassPos = myGrass.getPosition();
-            ArrayList<Animal> animalsAtPos = animals.get(myGrassPos);
-            if(animalsAtPos != null){
-                if(animalsAtPos.size() >= 1){
-                    grass.remove(myGrass);
-                }
-            }
-        }
-        for(int i = 0; i < dailyGrass; i++){
-            addGrass();
-        }
-    }
-
-    public void simulateMovement(){
-        for(Animal myAnimal: animalsList){
-            myAnimal.move();
-        }
-    }
-
-    public Vector2d getLowerLeft() {
-        return new Vector2d(0,0);}
-    public Vector2d getUpperRight() {
-        return new Vector2d(this.mapWidth,this.mapHeight);
-    }
+//    public void simulateMovement(){
+//        for(Animal myAnimal: animalsList){
+//            myAnimal.move();
+//        }
+//    }
+//
+//    public Vector2d getLowerLeft() {
+//        return new Vector2d(0,0);}
+//    public Vector2d getUpperRight() {
+//        return new Vector2d(this.mapWidth,this.mapHeight);
+//    }
 
 
 

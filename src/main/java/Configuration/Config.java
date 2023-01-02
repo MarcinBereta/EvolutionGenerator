@@ -9,18 +9,19 @@ public class Config {
             WorldParamType.MAP_HEIGHT,
             WorldParamType.MAP_WIDTH,
             WorldParamType.MAP_VARIANT,
-            WorldParamType.INIT_GRASS_COUNT,
-            WorldParamType.GRASS_ENERGY,
+            WorldParamType.STARTING_GRASS,
+            WorldParamType.PLANT_PROFIT,
             WorldParamType.GRASS_GROWTH_RATE,
             WorldParamType.GRASS_VARIANT,
-            WorldParamType.INIT_ANIMAL_COUNT,
-            WorldParamType.INIT_ANIMAL_ENERGY,
-            WorldParamType.REPRODUCTION_ENERGY_THRESHOLD,
+            WorldParamType.STARTING_ANIMALS,
+            WorldParamType.START_ENERGY,
+            WorldParamType.REQUIRED_COPULATION_ENERGY,
             WorldParamType.REPRODUCTION_COST,
-            WorldParamType.MIN_MUTATION_COUNT,
-            WorldParamType.MAX_MUTATION_COUNT,
             WorldParamType.MUTATION_VARIANT,
-            WorldParamType.ANIMAL_GENOME_LENGTH,
-            WorldParamType.ANIMAL_VARIANT
+            WorldParamType.ANIMAL_GEN_SIZE,
+            WorldParamType.ANIMAL_VARIANT,
+            WorldParamType.DAY_COST,
+            WorldParamType.MAX_GENS,
+            WorldParamType.MIN_GENS
     };
 }

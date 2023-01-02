@@ -1,20 +1,18 @@
 package Configuration;
 
 import gui.SimulationWindow;
-import mapManager.World;
+//import mapManager.World;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
 public class ParameterValidator {
-    World world;
     Map<WorldParamType, Object> worldParams;
 
     public ParameterValidator(String configFileName, Integer epochCount, Double epochDuration) throws FileNotFoundException, IllegalArgumentException{
         worldParams = loadParamWorld(configFileName);
         checkConsistency();
-//        world = new World(worldParams, epochCount, epochDuration);
         new SimulationWindow(worldParams);
     }
 
@@ -23,7 +21,6 @@ public class ParameterValidator {
             throws FileNotFoundException, IllegalArgumentException{
         worldParams = loadParamWorld(configFileName);
         checkConsistency();
-//        world = new World(worldParams, epochCount, epochDuration, csvFilePath);
         new SimulationWindow(worldParams);
     }
 
@@ -84,36 +81,23 @@ public class ParameterValidator {
         }
     }
 
-//    public static String startNewSimulation(
-//            String ConfigFileName, String csvFilePath, Integer epochCount, Double epochDuration){
-//        try{
-//            new ParameterValidator(ConfigFileName, epochCount, epochDuration);
-//            return "";
-//        }
-//        catch (IllegalArgumentException | FileNotFoundException e){
-//            System.out.println(e.getMessage());
-//            return e.getMessage();
-//        }
-//    }
-
-
-    private void checkConsistency() throws IllegalArgumentException{
+    private void checkConsistency() throws IllegalArgumentException {
         WorldParamType[] mustBePositiveParams = {
                 WorldParamType.MAP_HEIGHT,
                 WorldParamType.MAP_WIDTH,
-                WorldParamType.INIT_GRASS_COUNT,
-                WorldParamType.GRASS_ENERGY,
+                WorldParamType.STARTING_GRASS,
+                WorldParamType.PLANT_PROFIT,
                 WorldParamType.GRASS_GROWTH_RATE,
-                WorldParamType.INIT_ANIMAL_COUNT,
-                WorldParamType.INIT_ANIMAL_ENERGY,
-                WorldParamType.REPRODUCTION_ENERGY_THRESHOLD,
+                WorldParamType.STARTING_ANIMALS,
+                WorldParamType.START_ENERGY,
+                WorldParamType.REQUIRED_COPULATION_ENERGY,
                 WorldParamType.REPRODUCTION_COST,
-                WorldParamType.MIN_MUTATION_COUNT,
-                WorldParamType.MAX_MUTATION_COUNT,
-                WorldParamType.ANIMAL_GENOME_LENGTH,
+                WorldParamType.MIN_GENS,
+                WorldParamType.MAX_GENS,
+                WorldParamType.ANIMAL_GEN_SIZE
         };
 
-        for (WorldParamType param : mustBePositiveParams){
+        for (WorldParamType param : mustBePositiveParams) {
             mustBePositive(param);
 
         }
@@ -124,23 +108,23 @@ public class ParameterValidator {
         String mapCellCountDesc = WorldParamType.MAP_WIDTH + " * " + WorldParamType.MAP_HEIGHT;
 
 //        INIT_PLANT_COUNT < MAP_HEIGHT * MAP_WIDTH
-        mustBeLower(WorldParamType.INIT_GRASS_COUNT, mapCellCountVal, mapCellCountDesc);
+        mustBeLower(WorldParamType.STARTING_GRASS, mapCellCountVal, mapCellCountDesc);
 
 //        PLANT_GROWTH_RATE < MAP_HEIGHT * MAP_WIDTH
         mustBeLower(WorldParamType.GRASS_GROWTH_RATE, mapCellCountVal, mapCellCountDesc);
 
-//        MIN_MUTATION_COUNT < MAX_MUTATION_COUNT + 1
+//        MIN_GENS < MAX_GENS+ 1
         mustBeLower(
-                WorldParamType.MIN_MUTATION_COUNT,
-                (Integer)getParamValue(WorldParamType.MAX_MUTATION_COUNT) + 1,
-                "" + WorldParamType.MAX_MUTATION_COUNT
+                WorldParamType.MIN_GENS,
+                (Integer) getParamValue(WorldParamType.MAX_GENS) + 1,
+                "" + WorldParamType.MAX_GENS
         );
 
-//        MAX_MUTATION_COUNT < ANIMAL_GENOME_LENGTH
+//        MAX_GENS < ANIMAL_GEN_SIZE
         mustBeLower(
-                WorldParamType.MIN_MUTATION_COUNT,
-                (Integer) getParamValue(WorldParamType.ANIMAL_GENOME_LENGTH),
-                "" + WorldParamType.ANIMAL_GENOME_LENGTH);
+                WorldParamType.MAX_GENS,
+                (Integer) getParamValue(WorldParamType.ANIMAL_GEN_SIZE),
+                "" + WorldParamType.ANIMAL_VARIANT);
     }
 
     private Object getParamValue(WorldParamType paramType) throws IllegalArgumentException {

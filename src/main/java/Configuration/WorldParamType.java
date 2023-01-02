@@ -4,10 +4,11 @@ import mapElements.Vector2d;
 
 public enum WorldParamType {
     MAP_HEIGHT, MAP_WIDTH, MAP_VARIANT,
-    INIT_GRASS_COUNT, GRASS_ENERGY, GRASS_GROWTH_RATE, GRASS_VARIANT,
-    INIT_ANIMAL_COUNT, INIT_ANIMAL_ENERGY, REPRODUCTION_ENERGY_THRESHOLD,
-    REPRODUCTION_COST, MIN_MUTATION_COUNT, MAX_MUTATION_COUNT, MUTATION_VARIANT,
-    ANIMAL_GENOME_LENGTH, ANIMAL_VARIANT;
+    STARTING_GRASS, PLANT_PROFIT, GRASS_GROWTH_RATE, GRASS_VARIANT,
+    STARTING_ANIMALS, START_ENERGY, REQUIRED_COPULATION_ENERGY,
+    REPRODUCTION_COST,  MUTATION_VARIANT,
+    ANIMAL_GEN_SIZE, ANIMAL_VARIANT, DAY_COST,
+    MAX_GENS, MIN_GENS;
 
 
 
@@ -16,19 +17,20 @@ public enum WorldParamType {
             case MAP_HEIGHT -> "MAP_HEIGHT";
             case MAP_WIDTH -> "MAP_WIDTH";
             case MAP_VARIANT -> "MAP_VARIANT";
-            case INIT_GRASS_COUNT -> "INIT_GRASS_COUNT";
-            case GRASS_ENERGY -> "GRASS_ENERGY";
+            case STARTING_GRASS -> "STARTING_GRASS";
+            case PLANT_PROFIT -> "PLANT_PROFIT";
             case GRASS_GROWTH_RATE -> "GRASS_GROWTH_RATE";
             case GRASS_VARIANT -> "GRASS_VARIANT";
-            case INIT_ANIMAL_COUNT -> "INIT_ANIMAL_COUNT";
-            case INIT_ANIMAL_ENERGY -> "INIT_ANIMAL_ENERGY";
-            case REPRODUCTION_ENERGY_THRESHOLD -> "REPRODUCTION_ENERGY_THRESHOLD";
+            case STARTING_ANIMALS -> "STARTING_ANIMALS";
+            case START_ENERGY -> "START_ENERGY";
+            case REQUIRED_COPULATION_ENERGY -> "REQUIRED_COPULATION_ENERGY";
             case REPRODUCTION_COST -> "REPRODUCTION_COST";
-            case MIN_MUTATION_COUNT -> "MIN_MUTATION_COUNT";
-            case MAX_MUTATION_COUNT -> "MAX_MUTATION_COUNT";
             case MUTATION_VARIANT -> "MUTATION_VARIANT";
-            case ANIMAL_GENOME_LENGTH -> "ANIMAL_GENOME_LENGTH";
+            case ANIMAL_GEN_SIZE -> "ANIMAL_GEN_SIZE";
             case ANIMAL_VARIANT -> "ANIMAL_VARIANT";
+            case DAY_COST -> "DAY_COST";
+            case MAX_GENS -> "MAX_GENS";
+            case MIN_GENS -> "MIN_GENS";
         };
     }
 
@@ -37,19 +39,20 @@ public enum WorldParamType {
             case MAP_HEIGHT -> "Map height";
             case MAP_WIDTH -> "Map width";
             case MAP_VARIANT -> "Map variant";
-            case INIT_GRASS_COUNT -> "Init grass count";
-            case GRASS_ENERGY -> "Grass energy";
+            case STARTING_GRASS -> "Starting grass";
+            case PLANT_PROFIT -> "Plant profit";
             case GRASS_GROWTH_RATE -> "Grass growth rate";
             case GRASS_VARIANT -> "Grass variant";
-            case INIT_ANIMAL_COUNT -> "Init animal count";
-            case INIT_ANIMAL_ENERGY -> "Init animal energy";
-            case REPRODUCTION_ENERGY_THRESHOLD -> "Reproduction energy threshold";
+            case STARTING_ANIMALS -> "Starting animals";
+            case START_ENERGY -> "Starting energy";
+            case REQUIRED_COPULATION_ENERGY -> "Required copulation energy";
             case REPRODUCTION_COST -> "Reproduction cost";
-            case MIN_MUTATION_COUNT -> "Min mutation count";
-            case MAX_MUTATION_COUNT -> "Max mutation count";
             case MUTATION_VARIANT -> "Mutation variant";
-            case ANIMAL_GENOME_LENGTH -> "Animal genome length";
+            case ANIMAL_GEN_SIZE -> "Animal genome length";
             case ANIMAL_VARIANT -> "Animal variant";
+            case DAY_COST -> "Day cost";
+            case MAX_GENS -> "Max gens changes";
+            case MIN_GENS -> "Min gens Changes";
         };
     }
 
@@ -59,39 +62,39 @@ public enum WorldParamType {
                     GRASS_VARIANT,
                     MUTATION_VARIANT,
                     ANIMAL_VARIANT -> new Vector2d(0, 1);
-            case GRASS_ENERGY,
+            case PLANT_PROFIT,
                     GRASS_GROWTH_RATE,
-                    INIT_ANIMAL_ENERGY,
-                    REPRODUCTION_ENERGY_THRESHOLD,
+                    START_ENERGY,
+                    REQUIRED_COPULATION_ENERGY,
                     REPRODUCTION_COST,
-                    MIN_MUTATION_COUNT,
-                    MAX_MUTATION_COUNT,
-                    ANIMAL_GENOME_LENGTH -> new Vector2d(0, 100);
-            case INIT_ANIMAL_COUNT -> new Vector2d(0, 1000);
+                    DAY_COST,
+                    MIN_GENS,MAX_GENS,
+                    ANIMAL_GEN_SIZE -> new Vector2d(0, 100);
+            case STARTING_ANIMALS -> new Vector2d(0, 1000);
             case MAP_HEIGHT,
                     MAP_WIDTH,
-                    INIT_GRASS_COUNT -> new Vector2d(0, 10000);
+                    STARTING_GRASS -> new Vector2d(0, 10000);
         };
     }
 
     public int getDefaultValue(){
         return switch(this){
             case MAP_HEIGHT,
-                    INIT_ANIMAL_ENERGY,
+                    START_ENERGY,
+                    REQUIRED_COPULATION_ENERGY,
                     MAP_WIDTH -> 10;
             case MAP_VARIANT,
                     GRASS_VARIANT,
-                    MIN_MUTATION_COUNT,
                     MUTATION_VARIANT,
                     ANIMAL_VARIANT -> 0;
-            case INIT_GRASS_COUNT,
-                    REPRODUCTION_COST,
-                    MAX_MUTATION_COUNT -> 2;
-            case GRASS_ENERGY,
+            case STARTING_GRASS,
+                    MIN_GENS,
+                    REPRODUCTION_COST-> 2;
+            case PLANT_PROFIT,
                     GRASS_GROWTH_RATE,
-                    REPRODUCTION_ENERGY_THRESHOLD -> 1;
-            case INIT_ANIMAL_COUNT -> 20;
-            case ANIMAL_GENOME_LENGTH -> 7;
+                    DAY_COST-> 1;
+            case STARTING_ANIMALS -> 20;
+            case ANIMAL_GEN_SIZE,MAX_GENS -> 7;
         };
     }
 
@@ -107,9 +110,9 @@ public enum WorldParamType {
         this.mustBeValid(value);
         return switch(this){
             case MAP_HEIGHT, MAP_WIDTH,
-                    INIT_GRASS_COUNT, GRASS_ENERGY, GRASS_GROWTH_RATE,
-                    INIT_ANIMAL_COUNT, INIT_ANIMAL_ENERGY, REPRODUCTION_ENERGY_THRESHOLD, REPRODUCTION_COST,
-                    MIN_MUTATION_COUNT, MAX_MUTATION_COUNT, ANIMAL_GENOME_LENGTH
+                    STARTING_GRASS, PLANT_PROFIT, GRASS_GROWTH_RATE,
+                    STARTING_ANIMALS, START_ENERGY, REPRODUCTION_COST,REQUIRED_COPULATION_ENERGY,
+                    ANIMAL_GEN_SIZE, DAY_COST, MIN_GENS,MAX_GENS
                     -> value;
             case MAP_VARIANT -> VariantMap.parse(value);
             case GRASS_VARIANT -> VariantGrass.parse(value);

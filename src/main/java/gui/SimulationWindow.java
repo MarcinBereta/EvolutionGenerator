@@ -4,7 +4,6 @@ import Configuration.WorldParamType;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
@@ -13,13 +12,14 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import mapElements.Animal;
+import mapElements.MapEffects;
 import mapElements.Vector2d;
 import mapManager.*;
 
@@ -33,11 +33,10 @@ public class SimulationWindow implements AnimalMoveInteface{
 
     private int mapHeight=2;
     private int mapWidth=2;
-    int horizontal,vertical,width=20, height=20;
-    Vector2d lowerLeft, upperRight;
+    int horizontal,vertical;
     final GridPane gridPane = new GridPane();
-    private MapSettings mapSettings = new MapSettings();
-    private SimulationEngine engine;
+    private final MapSettings mapSettings = new MapSettings();
+    private final SimulationEngine engine;
     private AbstractWorldMap map;
     private final ExportData exportData = new ExportData();
     private final XYChart.Series<Number, Number> animalsChartSeriesW1 = new XYChart.Series<>();
@@ -46,11 +45,11 @@ public class SimulationWindow implements AnimalMoveInteface{
     private final XYChart.Series<Number, Number> avgKidsChartSeriesW1 = new XYChart.Series<>();
     private final XYChart.Series<Number, Number> avgLifeSpanChartSeriesW1 = new XYChart.Series<>();
     private ArrayList<XYChart.Series<Number, Number>> chartSeriesArrW1;
-    private GridPane animalsContainer = new GridPane();
+    private final GridPane animalsContainer = new GridPane();
     private int DayCount = 0;
     Map<Circle, Vector2d> positions = new HashMap<>();
 
-    private LinkedList<Animal> animalsToObserve = new LinkedList<>();
+    private final LinkedList<Animal> animalsToObserve = new LinkedList<>();
 
     public SimulationWindow(Map<WorldParamType, Object> worldParams){
 
@@ -67,32 +66,31 @@ public class SimulationWindow implements AnimalMoveInteface{
                 this.mapWidth = (int) entry.getValue();
 
             }
-            if(entry.getKey() == WorldParamType.ANIMAL_GENOME_LENGTH){
+            if(entry.getKey() == WorldParamType.ANIMAL_GEN_SIZE){
                 this.mapSettings.genSize = (int) entry.getValue();
             }
-            if (entry.getKey() == WorldParamType.GRASS_ENERGY){
+            if (entry.getKey() == WorldParamType.PLANT_PROFIT){
                 this.mapSettings.plantProfit = (int) entry.getValue();
             }
-            if(entry.getKey() == WorldParamType.INIT_ANIMAL_ENERGY){
+            if(entry.getKey() == WorldParamType.START_ENERGY){
                 this.mapSettings.startEnergy = (int) entry.getValue();
             }
-            if (entry.getKey() == WorldParamType.INIT_GRASS_COUNT){
+            if (entry.getKey() == WorldParamType.STARTING_GRASS){
                 this.mapSettings.startGrass = (int) entry.getValue();
             }
-            if (entry.getKey() == WorldParamType.INIT_ANIMAL_COUNT){
+            if (entry.getKey() == WorldParamType.STARTING_ANIMALS){
                 this.mapSettings.startingAnimals = (int) entry.getValue();
             }
-            if(entry.getKey() == WorldParamType.MAP_VARIANT){
-                this.mapSettings.variantmap = (Configuration.VariantMap) entry.getValue();
-            }
-            if(entry.getKey() == WorldParamType.ANIMAL_VARIANT){
-                this.mapSettings.variantanimal = (Configuration.VariantAnimal) entry.getValue();
+            if(worldParams.get(WorldParamType.MAP_VARIANT) == Configuration.VariantMap.EARTH){
+                this.map = new Earth(this.mapSettings);
+            }else{
+                this.map = new Hell(this.mapSettings);
             }
             if(entry.getKey() == WorldParamType.MUTATION_VARIANT){
-                this.mapSettings.variantmutation = (Configuration.VariantMutation) entry.getValue();
+                this.mapSettings.genType = (MapEffects) entry.getValue();
             }
             if(entry.getKey() == WorldParamType.GRASS_VARIANT){
-                this.mapSettings.variantgrass = (Configuration.VariantGrass) entry.getValue();
+                this.mapSettings.jungleType = (MapEffects) entry.getValue();
             }
             if (entry.getKey() == WorldParamType.REPRODUCTION_COST){
                 this.mapSettings.copulationEnergy = (int) entry.getValue();
@@ -100,20 +98,22 @@ public class SimulationWindow implements AnimalMoveInteface{
             if (entry.getKey() == WorldParamType.GRASS_GROWTH_RATE){
                 this.mapSettings.dailyGrass = (int) entry.getValue();
             }
+            if (entry.getKey() == WorldParamType.DAY_COST){
+                this.mapSettings.dayCost = (int) entry.getValue();
+            }
+            if (entry.getKey() == WorldParamType.ANIMAL_VARIANT){
+                this.mapSettings.moveType = (MapEffects) entry.getValue();
+            }
 
-
-//            this.dayCost = dayCost;
-//            this.jungleType = jungleType;
-//            this.moveType = moveType;
-
-
-
-//            case REPRODUCTION_ENERGY_THRESHOLD -> "Reproduction energy threshold";
-//            case MIN_MUTATION_COUNT -> "Min mutation count";
-
-
-
-
+            if (entry.getKey() == WorldParamType.REQUIRED_COPULATION_ENERGY){
+                this.mapSettings.requiredCopulationEnergy = (int) entry.getValue();
+            }
+            if (entry.getKey() == WorldParamType.MIN_GENS){
+                this.mapSettings.minGens = (int) entry.getValue();
+            }
+            if (entry.getKey() == WorldParamType.MAX_GENS){
+                this.mapSettings.maxGens = (int) entry.getValue();
+            }
 
         }
         if(worldParams.get(WorldParamType.MAP_VARIANT) == Configuration.VariantMap.EARTH){
@@ -124,12 +124,12 @@ public class SimulationWindow implements AnimalMoveInteface{
 
         Stage newWindow = new Stage();
         newWindow.setTitle("New Scene");
-        TextField textField = new TextField("Enter your name here");
-        Button button = new Button("OK");
-        VBox container = new VBox(textField, button);
-        container.setSpacing(15);
-        container.setAlignment(Pos.CENTER);
-        this.map = new Hell(mapSettings);
+//        TextField textField = new TextField("Enter your name here");
+//        Button button = new Button("OK");
+//        VBox container = new VBox(textField, button);
+//        container.setSpacing(15);
+//        container.setAlignment(Pos.CENTER);
+//        this.map = new Hell(mapSettings);
         this.engine = new SimulationEngine(map, mapSettings);
         engine.addObserver(this);
         Thread simulationEngineThread = new Thread(engine);
@@ -146,36 +146,60 @@ public class SimulationWindow implements AnimalMoveInteface{
         startButton.setPadding(btnPadding);
         stopButton.setPadding(btnPadding);
         exportDataButton.setPadding(btnPadding);
+        startButton.setBackground(new Background(new BackgroundFill(Color.LIGHTGREEN,CornerRadii.EMPTY, Insets.EMPTY)));
+        stopButton.setBackground(new Background(new BackgroundFill(Color.ORANGERED,CornerRadii.EMPTY, Insets.EMPTY)));
+        exportDataButton.setBackground(new Background(new BackgroundFill(Color.LIGHTSKYBLUE,CornerRadii.EMPTY, Insets.EMPTY)));
 
         HBox startStopButtons = new HBox(startButton, stopButton, exportDataButton);
+        startStopButtons.setPadding(new Insets(0,0,0,10));
         HBox animalBox = new HBox();
         Circle animalCircle = new Circle();
         animalCircle.setFill(Color.BLUE);
         animalCircle.setRadius(10);
-        Label animalLabel = new Label("Animal");
+        animalBox.setPadding(new Insets(10,0,0,0));
+        Label animalLabel = new Label("1-5 animals");
         animalBox.getChildren().addAll(animalCircle, animalLabel);
+
+        Label newanimalLabel = new Label("Animal information displayed on mouse click:" );
+        newanimalLabel.setFont(new Font("Arial", 16));
+        newanimalLabel.setTextFill(Color.DARKRED);
+        newanimalLabel.setPadding(new Insets(10,0,0,0));
 
         HBox grassBox = new HBox();
         Circle grassCircle = new Circle();
         grassCircle.setFill(Color.GREEN);
         grassCircle.setRadius(10);
         Label grassLabel = new Label("Grass");
+        grassBox.setPadding(new Insets(10,0,0,0));
         grassBox.getChildren().addAll(grassCircle, grassLabel);
 
+        HBox redanimalBox = new HBox();
+        Circle redanimalCircle = new Circle();
+        redanimalCircle.setFill(Color.RED);
+        redanimalCircle.setRadius(10);
+        Label redanimalLabel = new Label("+6 animals");
+        redanimalBox.setPadding(new Insets(10,0,0,0));
+        redanimalBox.getChildren().addAll(redanimalCircle, redanimalLabel);
+
         VBox legendBox = new VBox();
-        legendBox.getChildren().addAll(animalBox, grassBox);
-        legendBox.setLayoutX(400);
-        legendBox.setLayoutY(400);
+        Label legendLabel = new Label("Legend: ");
+        legendLabel.setFont(new Font("Arial", 20));
+
+        legendBox.getChildren().addAll(legendLabel,animalBox, grassBox, redanimalBox);
+
         HBox legendContainer = new HBox();
-        legendContainer.setLayoutX(400);
-        legendContainer.setLayoutY(400);
+        animalsContainer.setPadding(new Insets(10, 40, 0, 0));
         legendContainer.getChildren().add(legendBox);
         VBox mainContainer = new VBox();
+        legendBox.setPadding(new Insets(200,0,0,10));
 
-        mainContainer.getChildren().addAll(startStopButtons, animalsContainer);
+        mainContainer.getChildren().addAll(startStopButtons, newanimalLabel,animalsContainer);
         HBox hBox = new HBox(this.gridPane, legendBox,mainContainer);
-        Scene scene = new Scene(hBox, 1200, 800);
+        Scene scene = new Scene(hBox, 1300, 800);
+
+
         animalsContainer.add(new Label("Animals: 2" ), 0,0);
+
         startButton.setOnAction(ev -> {
             this.engine.startSimulation();
             exportDataButton.setDisable(true);
@@ -205,7 +229,7 @@ public class SimulationWindow implements AnimalMoveInteface{
         final NumberAxis yAxisW1 = new NumberAxis();
 
         final LineChart<Number, Number> lineChartW1 = new LineChart<>(xAxisW1, yAxisW1);
-        lineChartW1.setTitle("World 1. Statistics");
+        lineChartW1.setTitle("World Statistics");
 
         this.animalsChartSeriesW1.setName("Total animals");
         this.plantsChartSeriesW1.setName("Total plants");
@@ -233,7 +257,6 @@ public class SimulationWindow implements AnimalMoveInteface{
         newWindow.show();
     }
     public void createGrid(){
-        //Example
         int xMin = 0;
         int xMax = mapWidth+1;
         int yMin = 0;
@@ -268,7 +291,11 @@ public class SimulationWindow implements AnimalMoveInteface{
                     positions.put(circle, new Vector2d(newx, newy));
                     String[] guiType = map.getVisualisation(new Vector2d(newx, newy),positions,  circle );
                     circle.setFill(Color.web(guiType[0]));
-                    circle.setRadius(300/((mapHeight)));
+                    if (mapHeight> mapWidth){
+                    circle.setRadius(300/((mapHeight)));}
+                    else{
+                        circle.setRadius(300/((mapWidth)));
+                    }
                     circle.setOnMouseClicked(event -> {
                         System.out.println("Clicked on " + new Vector2d(newx, newy));
                         animalsToObserve.clear();
@@ -277,9 +304,13 @@ public class SimulationWindow implements AnimalMoveInteface{
                         }
                         this.generateList();
                     });
-
-                    box.setPrefWidth(40);
-                    box.setPrefHeight(40);
+                    if (mapHeight> mapWidth){
+                    box.setPrefWidth(600/((mapWidth)));
+                    box.setPrefHeight(600/((mapWidth)));}
+                    else{
+                        box.setPrefWidth(600/((mapHeight)));
+                        box.setPrefHeight(600/((mapHeight)));
+                    }
                     box.getChildren().add(circle);
                     this.gridPane.add(box, i, j, 1, 1);
                     GridPane.setHalignment(box, HPos.CENTER);
@@ -288,10 +319,18 @@ public class SimulationWindow implements AnimalMoveInteface{
             }
         }
         for(int i = 0; i < yMax; i++){
-            this.gridPane.getRowConstraints().add(new RowConstraints(600/((mapHeight))));
+            if (mapHeight > mapWidth){
+            this.gridPane.getRowConstraints().add(new RowConstraints(600/((mapHeight))));}
+            else{
+                this.gridPane.getRowConstraints().add(new RowConstraints(600/((mapWidth))));
+            }
         }
         for(int i = 0; i < xMax; i++){
-            this.gridPane.getColumnConstraints().add(new ColumnConstraints(600/((mapHeight))));
+            if (mapHeight > mapWidth){
+                this.gridPane.getColumnConstraints().add(new ColumnConstraints(600/((mapHeight))));}
+            else{
+                this.gridPane.getColumnConstraints().add(new ColumnConstraints(600/((mapWidth))));
+            };
         }
         this.gridPane.setGridLinesVisible(true);
         this.generateList();
@@ -304,15 +343,12 @@ public class SimulationWindow implements AnimalMoveInteface{
         this.animalsContainer.getColumnConstraints().clear();
         int rowNumber= 0;
         for(Animal myAnimal: animalsToObserve){
-            Label animalLabel = new Label("Animal nr " + rowNumber + " at position " +myAnimal.getPosition() + " at age " +myAnimal.getAge() + " with  " + myAnimal.getEnergy() + "energy and  " + myAnimal.getChildrenCount() + " children" + (myAnimal.isDead()? " is dead" : " is alive"));
+            Label animalLabel = new Label("Animal nr " + rowNumber + " at position " +myAnimal.getPosition() + " at age " +myAnimal.getAge() + " with  " + myAnimal.getEnergy() + " energy and  " + myAnimal.getChildrenCount() + " children " + (myAnimal.isDead()? " is dead" : " is alive"));
+            animalLabel.setFont(new Font("Arial", 14));
+            animalLabel.setTextFill(Color.PURPLE);
             this.animalsContainer.add(animalLabel, rowNumber, 0);
         }
     }
-
-private Vector2d getAnimalPosition(Circle circle) {
-    Vector2d position = positions.get(circle);
-    return position;
-}
 
 
     public void createMap(){
@@ -322,7 +358,6 @@ private Vector2d getAnimalPosition(Circle circle) {
         this.gridPane.setGridLinesVisible(false);
         this.gridPane.setGridLinesVisible(true);
         createGrid();
-
     }
 
     public void move() {
@@ -332,13 +367,13 @@ private Vector2d getAnimalPosition(Circle circle) {
             this.gridPane.getColumnConstraints().clear();
             this.gridPane.setGridLinesVisible(false);
             createMap();
+            //Chart data adding
             this.DayCount++;
             this.animalsChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount, this.engine.countAnimals()));
             this.plantsChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount, this.map.getTotalGrassAmount()));
             this.avgEnergyChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount, this.engine.getAvgEnergy()));
             this.avgKidsChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount, this.engine.getAvgChildrenAmount()));
             this.avgLifeSpanChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount, this.engine.getAvgLifeSpan()));
-
         });
     }
 

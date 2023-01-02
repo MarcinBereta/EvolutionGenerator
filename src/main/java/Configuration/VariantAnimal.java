@@ -1,13 +1,15 @@
 package Configuration;
 
+import mapElements.MapEffects;
+
 public enum VariantAnimal{
     FULLPREDESTINATION,
     BITOFMADDNESS;
 
-    static VariantAnimal parse(int value){
+    static MapEffects parse(int value){
         return switch (value){
-            case 0 -> VariantAnimal.FULLPREDESTINATION;
-            case 1 -> VariantAnimal.BITOFMADDNESS;
+            case 0 -> MapEffects.FULLPREDESTINATION;
+            case 1 -> MapEffects.BITOFMADDNESS;
             default -> null;
         };
     }

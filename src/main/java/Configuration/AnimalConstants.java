@@ -24,12 +24,12 @@ public class AnimalConstants {
 
     public int get(WorldParamType paramType) throws IllegalArgumentException {
         return switch (paramType) {
-            case GRASS_ENERGY -> this.GRASS_ENERGY;
-            case REPRODUCTION_ENERGY_THRESHOLD -> this.REPRODUCTION_ENERGY_THRESHOLD;
+            case PLANT_PROFIT -> this.GRASS_ENERGY;
+            case REQUIRED_COPULATION_ENERGY -> this.REPRODUCTION_ENERGY_THRESHOLD;
             case REPRODUCTION_COST -> this.REPRODUCTION_COST;
-            case MIN_MUTATION_COUNT -> this.MIN_MUTATION_COUNT;
-            case MAX_MUTATION_COUNT -> this.MAX_MUTATION_COUNT;
-            case ANIMAL_GENOME_LENGTH -> this.ANIMAL_GENOME_LENGTH;
+            case MIN_GENS -> this.MIN_MUTATION_COUNT;
+            case MAX_GENS -> this.MAX_MUTATION_COUNT;
+            case ANIMAL_GEN_SIZE -> this.ANIMAL_GENOME_LENGTH;
             default -> throw new IllegalArgumentException();
         };
     }

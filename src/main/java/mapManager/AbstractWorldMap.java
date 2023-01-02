@@ -5,7 +5,7 @@ import mapElements.*;
 
 import java.util.*;
 
-public abstract class AbstractWorldMap implements IPositionChangeObserver{
+public abstract class AbstractWorldMap implements IPositionChangeObserver, AbstractMapInterface{
     public MapSettings mapSettings;
     private int jungleSize;
     //Grass positions
@@ -17,9 +17,6 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
     protected LinkedList<Grass> junglePossible = new LinkedList<>();
     protected Comparator<FieldHistory> dieCompare = Comparator.comparing(FieldHistory::getDeathCount);
     protected SortedSet<FieldHistory> dieSet = new TreeSet<>(dieCompare);
-
-
-    protected LinkedList<Animal> animalHistoryList = new LinkedList<>();
 
     protected Map<Vector2d, FieldHistory> fieldHistory = new HashMap<>();
     private int totalGrassInJungle = 0;
@@ -50,7 +47,7 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
         animals.get(myAnimal.getPosition()).add(myAnimal);
         myAnimal.addObserver(this);
     }
-    protected void generateStartingJungle() {
+    public void generateStartingJungle() {
         if (this.mapSettings.jungleType == MapEffects.EQUATOR) {
             int tempJunglex = 0;
             int jungleStartY = (this.mapSettings.mapHeight) / 2;
@@ -87,7 +84,7 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
         }
     }
 
-    protected void addGrass() {
+    public void addGrass() {
         int probability = (int) (Math.random() * 100);
         if (probability < 80) {
             this.addGrassToJungle();
@@ -96,7 +93,7 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
         }
     }
 
-    protected void addGrassToJungle() {
+    public void addGrassToJungle() {
         if(junglePossible.size() == 0){
             return;
         }
@@ -106,7 +103,7 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
         this.grass.put(grass.getPosition(), grass);
     }
 
-    protected void addGrassToEdge() {
+    public void addGrassToEdge() {
         LinkedList<Vector2d> edgePossible = new LinkedList<>();
         for(int i = 0; i < this.mapSettings.mapWidth; i++){
             for(int j = 0; j < this.mapSettings.mapHeight; j++){
@@ -143,7 +140,7 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
         return newPosition;
     }
 
-    public static Comparator<Animal> animalComparator = new Comparator<Animal>() {
+    private static Comparator<Animal> animalComparator = new Comparator<Animal>() {
         @Override
         public int compare(Animal o1, Animal o2) {
             if (o1.getEnergy() > o2.getEnergy()) {
@@ -188,15 +185,11 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
 
                 for(Animal animal: animalList){
                     animal.changeEnergy(-this.mapSettings.dayCost);
-                    if(animal.isDead()){
-//                        System.out.println(animal.getPosition() + " " + animal.getEnergy());
-//                        System.out.println(animalList.size());
-                    }
                 }
 
                 LinkedList <Animal> animalReproduction = new LinkedList<>();
                 for(Animal animal1: animalList){
-                    if(animal1.getEnergy() >= this.mapSettings.copulationEnergy){
+                    if(animal1.getEnergy() >= this.mapSettings.requiredCopulationEnergy){
                         animalReproduction.add(animal1);
                     }
                 }
@@ -253,24 +246,9 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver{
         String[] visualisation= {myColor, type};
         return visualisation;
     }
-    public void subtractTotalGrassInJungle(int v) {
-        this.totalGrassInJungle -= v;
-    }
-
-    public void subtractTotalGrassOutsideJungle(int v) {
-        this.totalGrassOutsideJungle -= v;
-    }
 
     public int getTotalGrassAmount() {
         return this.totalGrassInJungle + this.totalGrassOutsideJungle;
-    }
-
-    public Animal getAnimalAtPosition(Vector2d position) {
-        LinkedList<Animal> animalsAtPosition = animals.get(position);
-        if (animalsAtPosition != null && !animalsAtPosition.isEmpty()) {
-            return animalsAtPosition.getFirst();
-        }
-        return null;
     }
 
     public LinkedList<Animal> getAnimalsAtPosition(Vector2d position){

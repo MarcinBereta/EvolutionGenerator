@@ -1,9 +1,5 @@
 package mapManager;
 
-import Configuration.VariantAnimal;
-import Configuration.VariantGrass;
-import Configuration.VariantMap;
-import Configuration.VariantMutation;
 import mapElements.MapEffects;
 
 public class MapSettings {
@@ -21,19 +17,15 @@ public class MapSettings {
     public MapEffects moveType = MapEffects.BITOFMADDNESS;
     public MapEffects genType = MapEffects.FULLRANDOM;
     public int genSize = 32;
-    public VariantMap variantmap;
-    public VariantAnimal variantanimal;
-    public VariantGrass variantgrass;
-    public VariantMutation variantmutation;
+    public int requiredCopulationEnergy = 21;
+    public int maxGens = 5;
+    public int minGens = 4;
     public MapSettings() {
     }
     public MapSettings(
             int mapWidth, int mapHeight, int plantProfit, int dayCost, int startEnergy, int copulationEnergy,
             int jungleSize, int dailyGrass, int startGrass, int startingAnimals,
-            MapEffects jungleType, MapEffects moveType, int genSize, VariantMap variantmap,
-VariantAnimal variantanimal,
-VariantGrass variantgrass,
- VariantMutation variantmutation
+            MapEffects jungleType, MapEffects moveType, int genSize, MapEffects genType, int requiredCopulationEnergy, int maxGens, int minGens
     ){
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
@@ -44,17 +36,19 @@ VariantGrass variantgrass,
         this.dailyGrass = dailyGrass;
         this.jungleType = jungleType;
         this.moveType = moveType;
+        this.genType = genType;
         this.genSize = genSize;
         this.startGrass = startGrass;
         this.startingAnimals = startingAnimals;
+        this.requiredCopulationEnergy = requiredCopulationEnergy;
+        this.minGens = minGens;
+        this.maxGens = maxGens;
     }
 
     public void updateMapSettings(
             int mapWidth, int mapHeight, int plantProfit, int dayCost, int startEnergy, int copulationEnergy,
-            int jungleSize, int dailyGrass, MapEffects jungleType, MapEffects moveType, int genSize, VariantMap variantmap,
-            VariantAnimal variantanimal,
-            VariantGrass variantgrass,
-            VariantMutation variantmutation    ){
+            int jungleSize, int dailyGrass, MapEffects jungleType, MapEffects moveType, int genSize,MapEffects genType, int requiredCopulationEnergy
+           ){
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.plantProfit = plantProfit;
@@ -65,10 +59,8 @@ VariantGrass variantgrass,
         this.jungleType = jungleType;
         this.moveType = moveType;
         this.genSize = genSize;
-//        this.variantmap = variantmap;
-//        this.variantanimal = variantanimal;
-//        this.variantmutation = variantmutation;
-//        this.variantgrass = variantgrass;
+        this.genType = genType;
+        this.requiredCopulationEnergy = requiredCopulationEnergy;
     }
 
 

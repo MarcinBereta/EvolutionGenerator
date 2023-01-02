@@ -20,8 +20,8 @@ public class MapConstants {
         return switch(paramType){
             case MAP_HEIGHT -> this.MAP_HEIGHT;
             case MAP_WIDTH -> this.MAP_WIDTH;
-            case INIT_GRASS_COUNT -> this.INIT_GRASS_COUNT;
-            case GRASS_ENERGY -> this.GRASS_ENERGY;
+            case STARTING_GRASS -> this.INIT_GRASS_COUNT;
+            case PLANT_PROFIT -> this.GRASS_ENERGY;
             case GRASS_GROWTH_RATE -> this.GRASS_GROWTH_PER_DAY;
             default -> throw new IllegalArgumentException();
         };

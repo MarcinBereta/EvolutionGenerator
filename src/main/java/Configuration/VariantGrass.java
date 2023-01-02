@@ -1,13 +1,15 @@
 package Configuration;
 
+import mapElements.MapEffects;
+
 public enum VariantGrass{
     TOXIC,
     EQUATOR;
 
-    static VariantGrass parse(int value){
+    static MapEffects parse(int value){
         return switch (value){
-            case 0 -> VariantGrass.TOXIC;
-            case 1 -> VariantGrass.EQUATOR;
+            case 0 -> MapEffects.TOXIC;
+            case 1 -> MapEffects.EQUATOR;
             default -> null;
         };
     }
