@@ -7,16 +7,16 @@ Z kolei w folderze ConfigFiles znajdują się pliki konfiguracyjne, które użyt
 
 * Map height -> wysokość mapy,
 * Map width -> Szerokość mapy,
-* Map variant -> Wariant mapy (Earth, Hell),
+* Map type -> Typ mapy (Earth, Hell),
 * Starting grass -> Początkowa ilość trawy,
 * Plant profit -> Ilość energii dostaraczana przez trawę,
 * Grass growth rate -> dzienna ilość nowej trawy,
-* Grass variant -> Wariant trawy (Toxic, Equator),
+* Grass type -> Typ trawy (Toxic, Equator),
 * Starting animals -> Startowa ilość zwierząt,
 * Starting energy -> Startowa ilość energii u zwierząt,
 * Required copulation energy -> Potrzebna energia do rozmnażania,
 * Reproduction cost -> koszt rozmnażania,
-* Mutation variant -> Wariant mutacji (Fullrandom, Smallcorrection),
+* Genome type -> Typ mutacji (Fullrandom, Smallcorrection),
 * Animal genome length -> Długość genów,
 * Move type -> typ ruchu zwierząt (Fullpredestination, Bitofmadness),
 * Day cost -> Dzienny koszt energii,
@@ -32,7 +32,7 @@ uzyskać dostęp do nowego pliku. Jeśli chcesz możesz też uruchomić kilka sy
 
 * Start -> Wznowienie symulacji,
 * Stop -> Zatrzymanie symulacji,
-* Export Current Chart Data -> Zapisz dane do pliku .csv
+* Export Data -> Zapisz dane do pliku .csv (Dostępny dopiero po zatrzymaniu symulacji)
 
 ## Oprogramowanie
 Aplikacja oparta na języku Java a interface zbudowany w JavaFX. Wykorzystywano: Java 17 oraz JavaFX-sdk-19
