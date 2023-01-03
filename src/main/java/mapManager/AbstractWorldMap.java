@@ -19,8 +19,7 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver, Abstr
     protected SortedSet<FieldHistory> dieSet = new TreeSet<>(dieCompare);
 
     protected Map<Vector2d, FieldHistory> fieldHistory = new HashMap<>();
-    private int totalGrassInJungle = 0;
-    private int totalGrassOutsideJungle = 0;
+
 
 
     public AbstractWorldMap(MapSettings settings) {
@@ -263,11 +262,11 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver, Abstr
         int emptyFields = 0;
 
         for (Vector2d position : grass.keySet()) {
-            if (position.x<=mapSettings.mapWidth+1 && position.y<=mapSettings.mapHeight+1 && position.x>=0 && position.y>=0){
+            if (position.x<=mapSettings.mapWidth && position.y<=mapSettings.mapHeight && position.x>=0 && position.y>=0){
             fields[position.x][position.y] = true;
         }}
         for (Vector2d position : animals.keySet()) {
-            if (position.x<=mapSettings.mapWidth+1 && position.y<=mapSettings.mapHeight+1 && position.x>=0 && position.y>=0){
+            if (position.x<=mapSettings.mapWidth && position.y<=mapSettings.mapHeight && position.x>=0 && position.y>=0){
             fields[position.x][position.y] = true;
         }}
 

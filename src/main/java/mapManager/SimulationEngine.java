@@ -100,6 +100,22 @@ public class SimulationEngine implements Runnable {
         }
         return mostPopularGen;
     }
+    public int oneGenomePlease(){
+        return Integer.parseInt(getMostPopularGen().split(",")[0].replace("[", ""));
+    }
+    public int allpopulargenome(){
+        String input = getMostPopularGen();
+        input = input.replaceAll("^\\[|\\]$", "");
+        String[] parts = input.split(",");
+        int result = 0;
+        for (String part : parts) {
+            part = part.trim();
+            if (part.matches("\\d+")) {
+                result = result * 10 + Integer.parseInt(part);
+            }
+        }
+        return result;
+    }
 
     private void updateMap() {
         for (AnimalMoveInteface observer : observers) {

@@ -30,8 +30,8 @@ public class ConfigurationWindow {
             new ChoiceBox<>(FXCollections.observableArrayList(listFiles(Config.CONFIG_DIR_PATH)));
     private final Label errorMsg;
 
-    private final Spinner<Integer> epochCountSpinner = new Spinner<>(1, 10000, 100);
-    private final Spinner<Double> epochDurationSpinner = new Spinner<>(0.1, 5, 0.5, 0.1);
+//    private final Spinner<Integer> epochCountSpinner = new Spinner<>(1, 10000, 100);
+//    private final Spinner<Double> epochDurationSpinner = new Spinner<>(0.1, 5, 0.5, 0.1);
     public ConfigurationWindow(){
         VBox root = new VBox();
         root.setStyle("-fx-background-color: lightblue;");
@@ -55,12 +55,12 @@ public class ConfigurationWindow {
             }
             attemptToCreateSimulation(val);
         });
-        HBox epochCountContainer = createParamInput("Epoch count:", epochCountSpinner);
-        HBox epochDurationContainer = createParamInput("Epoch Duration:", epochDurationSpinner);
+//        HBox epochCountContainer = createParamInput("Epoch count:", epochCountSpinner);
+//        HBox epochDurationContainer = createParamInput("Epoch Duration:", epochDurationSpinner);
         VBox container = new VBox(
                 configFileSelectionVbox,
-                epochCountContainer,
-                epochDurationContainer,
+//                epochCountContainer,
+//                epochDurationContainer,
                 errorMsg,
                 submitButton
         );
@@ -106,7 +106,7 @@ public class ConfigurationWindow {
         });
         Button newConfigFileBtn = new Button("New File");
         newConfigFileBtn.setBackground(new Background(new BackgroundFill(Color.LIGHTSKYBLUE,CornerRadii.EMPTY, Insets.EMPTY)));
-        newConfigFileBtn.setOnAction(event -> new InputConfigurationWindow());
+        newConfigFileBtn.setOnAction(event -> new ConfigureYourInputWindow());
         HBox choiceContainer = new HBox(choiceBox, RefreshButton, newConfigFileBtn);
         VBox configFileSelection = new VBox(titleLabel,choiceBoxLabel, choiceContainer);
         choiceContainer.setAlignment(Pos.CENTER);
@@ -139,9 +139,9 @@ public class ConfigurationWindow {
     private void attemptToCreateSimulation(String ConfigFileName) {
         handleSimulationCreationResult(
                 ParameterValidator.startNewSimulation(
-                        ConfigFileName,
-                        epochCountSpinner.getValue(),
-                        epochDurationSpinner.getValue()
+                        ConfigFileName
+//                        epochCountSpinner.getValue(),
+//                        epochDurationSpinner.getValue()
                 )
         );
     }

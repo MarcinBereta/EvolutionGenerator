@@ -7,7 +7,7 @@ public enum WorldParamType {
     STARTING_GRASS, PLANT_PROFIT, GRASS_GROWTH_RATE, GRASS_VARIANT,
     STARTING_ANIMALS, START_ENERGY, REQUIRED_COPULATION_ENERGY,
     REPRODUCTION_COST,  MUTATION_VARIANT,
-    ANIMAL_GEN_SIZE, ANIMAL_VARIANT, DAY_COST,
+    ANIMAL_GEN_SIZE, MOVE_TYPE, DAY_COST,
     MAX_GENS, MIN_GENS;
 
 
@@ -27,7 +27,7 @@ public enum WorldParamType {
             case REPRODUCTION_COST -> "REPRODUCTION_COST";
             case MUTATION_VARIANT -> "MUTATION_VARIANT";
             case ANIMAL_GEN_SIZE -> "ANIMAL_GEN_SIZE";
-            case ANIMAL_VARIANT -> "ANIMAL_VARIANT";
+            case MOVE_TYPE -> "MOVE_TYPE";
             case DAY_COST -> "DAY_COST";
             case MAX_GENS -> "MAX_GENS";
             case MIN_GENS -> "MIN_GENS";
@@ -49,7 +49,7 @@ public enum WorldParamType {
             case REPRODUCTION_COST -> "Reproduction cost";
             case MUTATION_VARIANT -> "Mutation variant";
             case ANIMAL_GEN_SIZE -> "Animal genome length";
-            case ANIMAL_VARIANT -> "Animal variant";
+            case MOVE_TYPE -> "Move type";
             case DAY_COST -> "Day cost";
             case MAX_GENS -> "Max gens changes";
             case MIN_GENS -> "Min gens Changes";
@@ -61,7 +61,7 @@ public enum WorldParamType {
             case MAP_VARIANT,
                     GRASS_VARIANT,
                     MUTATION_VARIANT,
-                    ANIMAL_VARIANT -> new Vector2d(0, 1);
+                    MOVE_TYPE -> new Vector2d(0, 1);
             case PLANT_PROFIT,
                     GRASS_GROWTH_RATE,
                     START_ENERGY,
@@ -86,7 +86,7 @@ public enum WorldParamType {
             case MAP_VARIANT,
                     GRASS_VARIANT,
                     MUTATION_VARIANT,
-                    ANIMAL_VARIANT -> 0;
+                    MOVE_TYPE -> 0;
             case STARTING_GRASS,
                     MIN_GENS,
                     REPRODUCTION_COST-> 2;
@@ -117,7 +117,7 @@ public enum WorldParamType {
             case MAP_VARIANT -> VariantMap.parse(value);
             case GRASS_VARIANT -> VariantGrass.parse(value);
             case MUTATION_VARIANT -> VariantMutation.parse(value);
-            case ANIMAL_VARIANT -> VariantAnimal.parse(value);
+            case MOVE_TYPE -> MoveType.parse(value);
         };
     }
 }

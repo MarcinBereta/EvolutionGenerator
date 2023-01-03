@@ -10,19 +10,12 @@ import java.util.*;
 public class ParameterValidator {
     Map<WorldParamType, Object> worldParams;
 
-    public ParameterValidator(String configFileName, Integer epochCount, Double epochDuration) throws FileNotFoundException, IllegalArgumentException{
+    public ParameterValidator(String configFileName) throws FileNotFoundException, IllegalArgumentException{
         worldParams = loadParamWorld(configFileName);
         checkConsistency();
         new SimulationWindow(worldParams);
     }
 
-
-    public ParameterValidator(String configFileName, Integer epochCount, Double epochDuration, String csvFilePath)
-            throws FileNotFoundException, IllegalArgumentException{
-        worldParams = loadParamWorld(configFileName);
-        checkConsistency();
-        new SimulationWindow(worldParams);
-    }
 
     private Map<WorldParamType, Object> loadParamWorld(String configFileName) throws FileNotFoundException, IllegalArgumentException{
         List<String> fileContent = getFileContent(Config.CONFIG_DIR_PATH  + '/' + configFileName);
@@ -70,9 +63,9 @@ public class ParameterValidator {
         return lines;
     }
 
-    public static String startNewSimulation(String ConfigFileName, Integer epochCount, Double epochDuration){
+    public static String startNewSimulation(String ConfigFileName){
         try{
-            new ParameterValidator(ConfigFileName, epochCount, epochDuration);
+            new ParameterValidator(ConfigFileName);
             return "";
         }
         catch (IllegalArgumentException | FileNotFoundException e){
@@ -124,7 +117,7 @@ public class ParameterValidator {
         mustBeLower(
                 WorldParamType.MAX_GENS,
                 (Integer) getParamValue(WorldParamType.ANIMAL_GEN_SIZE),
-                "" + WorldParamType.ANIMAL_VARIANT);
+                "" + WorldParamType.MOVE_TYPE);
     }
 
     private Object getParamValue(WorldParamType paramType) throws IllegalArgumentException {

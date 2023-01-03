@@ -31,6 +31,9 @@ public class SimulationWindow implements AnimalMoveInteface{
 
     private int mapHeight=2;
     private int mapWidth=2;
+    private int row = 0;
+    private int rowIndex = 0;
+    private int downRowIndex = -1;
     int horizontal,vertical;
     final GridPane gridPane = new GridPane();
     private final MapSettings mapSettings = new MapSettings();
@@ -47,11 +50,11 @@ public class SimulationWindow implements AnimalMoveInteface{
     private ArrayList<XYChart.Series<Number, Number>> chartSeriesArrW1;
     private final GridPane animalsContainer = new GridPane();
     private final GridPane genomeContainer = new GridPane();
+    private final GridPane genContainer = new GridPane();
     private int DayCount = 0;
     Map<Circle, Vector2d> positions = new HashMap<>();
 
     private final LinkedList<Animal> animalsToObserve = new LinkedList<>();
-    private final LinkedList<Animal> genomeToObserve = new LinkedList<>();
     public SimulationWindow(Map<WorldParamType, Object> worldParams){
 
         for(Map.Entry<WorldParamType, Object> entry : worldParams.entrySet()){
@@ -102,7 +105,7 @@ public class SimulationWindow implements AnimalMoveInteface{
             if (entry.getKey() == WorldParamType.DAY_COST){
                 this.mapSettings.dayCost = (int) entry.getValue();
             }
-            if (entry.getKey() == WorldParamType.ANIMAL_VARIANT){
+            if (entry.getKey() == WorldParamType.MOVE_TYPE){
                 this.mapSettings.moveType = (MapEffects) entry.getValue();
             }
 
@@ -146,7 +149,7 @@ public class SimulationWindow implements AnimalMoveInteface{
         exportDataButton.setBackground(new Background(new BackgroundFill(Color.LIGHTSKYBLUE,CornerRadii.EMPTY, Insets.EMPTY)));
 
         HBox startStopButtons = new HBox(startButton, stopButton, exportDataButton);
-        startStopButtons.setPadding(new Insets(0,0,0,10));
+        startStopButtons.setPadding(new Insets(0,0,0,30));
         HBox animalBox = new HBox();
         Circle animalCircle = new Circle();
         animalCircle.setFill(Color.BLUE);
@@ -156,9 +159,17 @@ public class SimulationWindow implements AnimalMoveInteface{
         animalBox.getChildren().addAll(animalCircle, animalLabel);
 
         Label newanimalLabel = new Label("Animal information displayed on mouse click:" );
+        Label infoanimalLabel = new Label("Animal with the most popular gens: " );
+        Label geninfolabel = new Label("Most popular gens: " );
         newanimalLabel.setFont(new Font("Arial", 16));
         newanimalLabel.setTextFill(Color.DARKRED);
-        newanimalLabel.setPadding(new Insets(10,0,0,0));
+        infoanimalLabel.setFont(new Font("Arial", 16));
+        infoanimalLabel.setTextFill(Color.DARKRED);
+        newanimalLabel.setPadding(new Insets(10,100,0,0));
+        infoanimalLabel.setPadding(new Insets(30,100,0,0));
+        geninfolabel.setPadding(new Insets(20,100,0,0));
+        geninfolabel.setTextFill(Color.DARKRED);
+        geninfolabel.setFont(new Font("Arial", 16));
 
         HBox grassBox = new HBox();
         Circle grassCircle = new Circle();
@@ -183,16 +194,17 @@ public class SimulationWindow implements AnimalMoveInteface{
         legendBox.getChildren().addAll(legendLabel,animalBox, grassBox, redanimalBox);
 
         HBox legendContainer = new HBox();
-        animalsContainer.setPadding(new Insets(10, 40, 0, 0));
-        animalsContainer.setMinHeight(400);
-        genomeContainer.setPadding(new Insets(30, 40, 0, 0));
+        genContainer.setPadding(new Insets(5, 100, 0, 0));
+        animalsContainer.setPadding(new Insets(10, 100, 0, 0));
+        genomeContainer.setPadding(new Insets(5, 100, 0, 0));
         legendContainer.getChildren().add(legendBox);
         VBox mainContainer = new VBox();
-        legendBox.setPadding(new Insets(200,0,0,10));
+        legendBox.setPadding(new Insets(300,0,0,20));
 
-        mainContainer.getChildren().addAll(startStopButtons, newanimalLabel,animalsContainer, genomeContainer);
+        mainContainer.getChildren().addAll(startStopButtons, newanimalLabel,animalsContainer, geninfolabel,genContainer, infoanimalLabel,genomeContainer);
+        mainContainer.setPadding(new Insets(0,0,0,55));
         HBox hBox = new HBox(this.gridPane, legendBox,mainContainer);
-        Scene scene = new Scene(hBox, 1300, 800);
+        Scene scene = new Scene(hBox, 1500, 800);
 
 
         animalsContainer.add(new Label("Animals: 2" ), 0,0);
@@ -276,25 +288,30 @@ public class SimulationWindow implements AnimalMoveInteface{
             for(int j = 0; j < yMax; j++){
                 if(i == 0 && j == 0){
                     Label label = new Label("X/Y");
-                    label.setFont(new Font(5));
+                    if (150/xMax >3){
+                    label.setFont(new Font((150/xMax-1)*2));}
+                    else label.setFont(new Font(5));
                     gridPane.add(label, i, j);
                     GridPane.setHalignment(label, HPos.CENTER);
                 }else if(i == 0){
                     Label label = new Label(Integer.toString(j));
-                    label.setFont(new Font(5));
+                    if (150/xMax >3){
+                        label.setFont(new Font((150/xMax-1)*2));}
+                    else label.setFont(new Font(5));
                     gridPane.add(label, i, j);
                     GridPane.setHalignment(label, HPos.CENTER);
                 }
                 else if(j == 0){
                     Label label = new Label(Integer.toString(i));
-                    label.setFont(new Font(5));
+                    if (150/xMax >3){
+                        label.setFont(new Font((150/xMax-1)*2));}
+                    else label.setFont(new Font(5));
                     gridPane.add(label, i, j);
                     GridPane.setHalignment(label, HPos.CENTER);
 
                 }
                 else{
-
-                    int newx = 0 + i - 1;
+                    int newx = i - 1;
                     int newy = yMax - j - 1;
                     VBox box = new VBox();
                     Circle circle = new Circle();
@@ -302,9 +319,9 @@ public class SimulationWindow implements AnimalMoveInteface{
                     String[] guiType = map.getVisualisation(new Vector2d(newx, newy),positions, circle );
                     circle.setFill(Color.web(guiType[0]));
                     if (mapHeight> mapWidth){
-                        circle.setRadius(375/(mapHeight));}
+                        circle.setRadius(350/yMax);}
                     else{
-                        circle.setRadius(375/(mapWidth));
+                        circle.setRadius(350/xMax);
                     }
                     circle.setOnMouseClicked(event -> {
                         System.out.println("Clicked on " + new Vector2d(newx, newy));
@@ -316,11 +333,11 @@ public class SimulationWindow implements AnimalMoveInteface{
                     });
 
                     if (mapHeight> mapWidth){
-                        box.setPrefWidth(750/(mapWidth));
-                        box.setPrefHeight(750/(mapWidth));}
+                        box.setPrefWidth(700/xMax);
+                        box.setPrefHeight(700/xMax);}
                     else{
-                        box.setPrefWidth(750/(mapHeight));
-                        box.setPrefHeight(750/(mapHeight));
+                        box.setPrefWidth(700/yMax);
+                        box.setPrefHeight(700/yMax);
                     }
 
                     box.getChildren().add(circle);
@@ -332,16 +349,16 @@ public class SimulationWindow implements AnimalMoveInteface{
         }
         for(int i = 0; i < yMax; i++){
             if (mapHeight > mapWidth){
-                this.gridPane.getRowConstraints().add(new RowConstraints(750/(mapHeight)));}
+                this.gridPane.getRowConstraints().add(new RowConstraints(700/yMax));}
             else{
-                this.gridPane.getRowConstraints().add(new RowConstraints(750/(mapWidth)));
+                this.gridPane.getRowConstraints().add(new RowConstraints(700/xMax));
             }
         }
         for(int i = 0; i < xMax; i++){
             if (mapHeight > mapWidth){
-                this.gridPane.getColumnConstraints().add(new ColumnConstraints(750/(mapHeight)));}
+                this.gridPane.getColumnConstraints().add(new ColumnConstraints(700/yMax));}
             else{
-                this.gridPane.getColumnConstraints().add(new ColumnConstraints(750/(mapWidth)));
+                this.gridPane.getColumnConstraints().add(new ColumnConstraints(700/xMax));
             };
         }
         this.gridPane.setGridLinesVisible(true);
@@ -351,20 +368,29 @@ public class SimulationWindow implements AnimalMoveInteface{
         this.animalsContainer.getChildren().clear();
         this.animalsContainer.getRowConstraints().clear();
         this.animalsContainer.getColumnConstraints().clear();
+        this.genomeContainer.getChildren().clear();
+        this.genomeContainer.getRowConstraints().clear();
+        this.genomeContainer.getColumnConstraints().clear();
         int rowNumber= 0;
         for(Animal myAnimal: animalsToObserve){
-            Label animalLabel = new Label("Animal nr " + rowNumber + " at position " +myAnimal.getPosition() + " at age " +myAnimal.getAge() + " with  " + myAnimal.getEnergy() + " energy and  " + myAnimal.getChildrenCount() + " children " + (myAnimal.isDead()? " is dead" : " is alive"+ "\n"));
+            Label animalLabel = new Label("Animal nr " + rowNumber + " at position " +myAnimal.getPosition() + " at age " +myAnimal.getAge() + " with  " + myAnimal.getEnergy() + " energy and  " + myAnimal.getChildrenCount() + " children " + (myAnimal.isDead()? " is dead" : " is alive"));
             animalLabel.setFont(new Font("Arial", 14));
             animalLabel.setTextFill(Color.PURPLE);
             this.animalsContainer.add(animalLabel, rowNumber, 0);
             rowNumber++;
         }
+        this.genContainer.getChildren().clear();
+        Label genslabel = new Label("Most popular gen: " + engine.getMostPopularGen());
+        genslabel.setFont(new Font("Arial", 14));
+        genslabel.setTextFill(Color.PURPLE);
+        this.genContainer.add(genslabel, rowIndex, 0);
 
-        this.animalsContainer.add(new Label("Most popular gen: " + engine.getMostPopularGen() + "\n"), rowNumber, 0);
-        rowNumber++;
         for(String myAnimal : engine.animalsWithGenom()){
-            this.animalsContainer.add(new Label(myAnimal), rowNumber, 0);
-            rowNumber ++;
+            Label label = new Label(myAnimal);
+            label.setFont(new Font("Arial", 14));
+            label.setTextFill(Color.PURPLE);
+            this.genomeContainer.add(label, rowNumber, 0);
+            rowNumber++;
         }
     }
 
@@ -391,7 +417,7 @@ public class SimulationWindow implements AnimalMoveInteface{
             this.avgEnergyChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount, this.engine.getAvgEnergy()));
             this.avgLifeSpanChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount, this.engine.getAvgLifeSpan()));
             this.freePlacesChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount,this.map.getNumberOfEmptyFields()));
-//            this.mostPopularGenChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount,this.engine.mostPopularGen()));
+            this.mostPopularGenChartSeriesW1.getData().add(new XYChart.Data<>(this.DayCount,this.engine.oneGenomePlease()));
         });
     }
 

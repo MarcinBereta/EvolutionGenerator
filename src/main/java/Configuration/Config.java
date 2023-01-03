@@ -17,7 +17,7 @@ public class Config {
             WorldParamType.REPRODUCTION_COST,
             WorldParamType.MUTATION_VARIANT,
             WorldParamType.ANIMAL_GEN_SIZE,
-            WorldParamType.ANIMAL_VARIANT,
+            WorldParamType.MOVE_TYPE,
             WorldParamType.DAY_COST,
             WorldParamType.MAX_GENS,
             WorldParamType.MIN_GENS
