@@ -1,7 +1,7 @@
 # Evolution Generator
 
-Projekt wykonany na Programowanie Obiektowe. W folderze SimulationFiles/CSVFiles zapisywane są po wciśniejciu przycisku "Export Data". Pliki tam zawierają różne informacje na temat symulacji w poszczególnych jej dniach.
-Z kolei w folderze SimulationFiles/ConfigFiles znajdują się pliki konfiguracyjne, które użytkownik sam może stworzyć. W zależności od wyborów symulacja przebiegnie w inny sposób.
+Projekt wykonany na Programowanie Obiektowe. W folderze SimulationFiles/CSVFiles zapisywane są po wciśniejciu przycisku "Export Data". Pliki tam zawierają różne informacje na temat symulacji w poszczególnych jej dniach. 
+Z kolei w folderze SimulationFiles/ConfigFiles znajdują się pliki konfiguracyjne, które użytkownik sam może stworzyć. W zależności od wyborów symulacja przebiegnie w inny sposób. Aplikacja uruchamiana z poziomu pliku app w src/main/java/gui/app
 
 ## Ważna informacja!
 Czasem do uruchomienia app należy wejść w Run -> Edit Configuration, tam wybrać Java 17 (dokładniej Java 17.0.04), a  następnie wejść w Modify Options -> Add VM options i dodać tam następującą linijkę: 
