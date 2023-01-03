@@ -1,7 +1,7 @@
 # Evolution Generator
 
-Projekt wykonany na Programowanie Obiektowe. W folderze CSVFiles zapisywane są po wciśniejciu przycisku "Export Current Chart Data". Pliki tam zawierają różne informacje na temat symulacji w poszczególnych jej dniach.
-Z kolei w folderze ConfigFiles znajdują się pliki konfiguracyjne, które użytkownik sam może stworzyć. W zależności od wyborów symulacja przebiegnie w inny sposób.
+Projekt wykonany na Programowanie Obiektowe. W folderze SimulationFiles/CSVFiles zapisywane są po wciśniejciu przycisku "Export Data". Pliki tam zawierają różne informacje na temat symulacji w poszczególnych jej dniach.
+Z kolei w folderze SimulationFiles/ConfigFiles znajdują się pliki konfiguracyjne, które użytkownik sam może stworzyć. W zależności od wyborów symulacja przebiegnie w inny sposób.
 
 ## Ważna informacja!
 Czasem do uruchomienia app należy wejść w Run -> Edit Configuration, tam wybrać Java 17 (dokładniej Java 17.0.04), a  następnie wejść w Modify Options -> Add VM options i dodać tam następującą linijkę: 
@@ -14,16 +14,16 @@ gdzie : "\path\to\javafx-sdk-19\lib" jest ścieżką do folderu lib w Javafx-sdk
 
 * Map height -> wysokość mapy,
 * Map width -> Szerokość mapy,
-* Map variant -> Wariant mapy (Earth, Hell),
+* Map type -> Typ mapy (Earth, Hell),
 * Starting grass -> Początkowa ilość trawy,
 * Plant profit -> Ilość energii dostaraczana przez trawę,
-* Grass growth rate -> dzienna ilość nowej trawy,
-* Grass variant -> Wariant trawy (Toxic, Equator),
+* Daily grass -> dzienna ilość nowej trawy,
+* Grass type -> Typ trawy (Toxic, Equator),
 * Starting animals -> Startowa ilość zwierząt,
 * Starting energy -> Startowa ilość energii u zwierząt,
 * Required copulation energy -> Potrzebna energia do rozmnażania,
 * Reproduction cost -> koszt rozmnażania,
-* Mutation variant -> Wariant mutacji (Fullrandom, Smallcorrection),
+* Genome type -> Typ mutacji (Fullrandom, Smallcorrection),
 * Animal genome length -> Długość genów,
 * Move type -> typ ruchu zwierząt (Fullpredestination, Bitofmadness),
 * Day cost -> Dzienny koszt energii,
