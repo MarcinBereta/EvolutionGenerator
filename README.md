@@ -3,6 +3,13 @@
 Projekt wykonany na Programowanie Obiektowe. W folderze CSVFiles zapisywane są po wciśniejciu przycisku "Export Current Chart Data". Pliki tam zawierają różne informacje na temat symulacji w poszczególnych jej dniach.
 Z kolei w folderze ConfigFiles znajdują się pliki konfiguracyjne, które użytkownik sam może stworzyć. W zależności od wyborów symulacja przebiegnie w inny sposób.
 
+## Ważna informacja!
+Czasem do uruchomienia app należy wejść w Run -> Edit Configuration, tam wybrać Java 17 (dokładniej Java 17.0.04), a  następnie wejść w Modify Options -> Add VM options i dodać tam następującą linijkę: 
+* --module-path "\path\to\javafx-sdk-19\lib" --add-modules javafx.controls,javafx.fxml
+
+gdzie : "\path\to\javafx-sdk-19\lib" jest ścieżką do folderu lib w Javafx-sdk-19 w systemie użytkownika
+
+
 ### Możliwe wybory w konfiguracji 
 
 * Map height -> wysokość mapy,
