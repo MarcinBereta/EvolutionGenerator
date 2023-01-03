@@ -33,3 +33,6 @@ uzyskać dostęp do nowego pliku. Jeśli chcesz możesz też uruchomić kilka sy
 * Start -> Wznowienie symulacji,
 * Stop -> Zatrzymanie symulacji,
 * Export Current Chart Data -> Zapisz dane do pliku .csv
+
+## Oprogramowanie
+Aplikacja oparta na języku Java a interface zbudowany w JavaFX. Wykorzystywano: Java 17 oraz JavaFX-sdk-19
