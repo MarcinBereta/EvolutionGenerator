@@ -6,7 +6,7 @@ Z kolei w folderze SimulationFiles/ConfigFiles znajdują się pliki konfiguracyj
 Aplikacja uruchamiana z poziomu pliku App w src/main/java/gui/app
 
 ## Ważna informacja!
-Czasem do uruchomienia App należy wejść w Run -> Edit Configuration, tam wybrać Java 17 (dokładniej Java 17.0.04), a  następnie wejść w Modify Options -> Add VM options i dodać tam następującą linijkę: 
+Czasem do uruchomienia App należy wejść w Run -> Edit Configuration, tam wybrać Java 17 (dokładniej Java 17.0.4), a  następnie wejść w Modify Options -> Add VM options i dodać tam następującą linijkę: 
 * --module-path "\path\to\javafx-sdk-19\lib" --add-modules javafx.controls,javafx.fxml
 
 gdzie : "\path\to\javafx-sdk-19\lib" jest ścieżką do folderu lib w Javafx-sdk-19 w systemie użytkownika
