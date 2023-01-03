@@ -1,12 +1,16 @@
 package Configuration;
 
+import Configuration.Types.GenTypes;
+import Configuration.Types.GrassType;
+import Configuration.Types.MapTypes;
+import Configuration.Types.MoveType;
 import mapElements.Vector2d;
 
-public enum WorldParamType {
-    MAP_HEIGHT, MAP_WIDTH, MAP_VARIANT,
-    STARTING_GRASS, PLANT_PROFIT, GRASS_GROWTH_RATE, GRASS_VARIANT,
+public enum WorldTypeParamaters {
+    MAP_HEIGHT, MAP_WIDTH, MAP_TYPE,
+    STARTING_GRASS, PLANT_PROFIT, DAILY_GRASS, GRASS_TYPE,
     STARTING_ANIMALS, START_ENERGY, REQUIRED_COPULATION_ENERGY,
-    REPRODUCTION_COST,  MUTATION_VARIANT,
+    REPRODUCTION_COST,  GEN_TYPE,
     ANIMAL_GEN_SIZE, MOVE_TYPE, DAY_COST,
     MAX_GENS, MIN_GENS;
 
@@ -16,16 +20,16 @@ public enum WorldParamType {
         return switch(this){
             case MAP_HEIGHT -> "MAP_HEIGHT";
             case MAP_WIDTH -> "MAP_WIDTH";
-            case MAP_VARIANT -> "MAP_VARIANT";
+            case MAP_TYPE -> "MAP_TYPE";
             case STARTING_GRASS -> "STARTING_GRASS";
             case PLANT_PROFIT -> "PLANT_PROFIT";
-            case GRASS_GROWTH_RATE -> "GRASS_GROWTH_RATE";
-            case GRASS_VARIANT -> "GRASS_VARIANT";
+            case DAILY_GRASS -> "DAILY_GRASS";
+            case GRASS_TYPE -> "GRASS_TYPE";
             case STARTING_ANIMALS -> "STARTING_ANIMALS";
             case START_ENERGY -> "START_ENERGY";
             case REQUIRED_COPULATION_ENERGY -> "REQUIRED_COPULATION_ENERGY";
             case REPRODUCTION_COST -> "REPRODUCTION_COST";
-            case MUTATION_VARIANT -> "MUTATION_VARIANT";
+            case GEN_TYPE -> "GEN_TYPE";
             case ANIMAL_GEN_SIZE -> "ANIMAL_GEN_SIZE";
             case MOVE_TYPE -> "MOVE_TYPE";
             case DAY_COST -> "DAY_COST";
@@ -38,16 +42,16 @@ public enum WorldParamType {
         return switch (this){
             case MAP_HEIGHT -> "Map height";
             case MAP_WIDTH -> "Map width";
-            case MAP_VARIANT -> "Map variant";
+            case MAP_TYPE -> "Map type";
             case STARTING_GRASS -> "Starting grass";
             case PLANT_PROFIT -> "Plant profit";
-            case GRASS_GROWTH_RATE -> "Grass growth rate";
-            case GRASS_VARIANT -> "Grass variant";
+            case DAILY_GRASS -> "Daily grass";
+            case GRASS_TYPE -> "Grass type";
             case STARTING_ANIMALS -> "Starting animals";
             case START_ENERGY -> "Starting energy";
             case REQUIRED_COPULATION_ENERGY -> "Required copulation energy";
             case REPRODUCTION_COST -> "Reproduction cost";
-            case MUTATION_VARIANT -> "Mutation variant";
+            case GEN_TYPE -> "Genome type";
             case ANIMAL_GEN_SIZE -> "Animal genome length";
             case MOVE_TYPE -> "Move type";
             case DAY_COST -> "Day cost";
@@ -58,12 +62,12 @@ public enum WorldParamType {
 
     public Vector2d getValueRange(){
         return switch(this){
-            case MAP_VARIANT,
-                    GRASS_VARIANT,
-                    MUTATION_VARIANT,
+            case MAP_TYPE,
+                    GRASS_TYPE,
+                    GEN_TYPE,
                     MOVE_TYPE -> new Vector2d(0, 1);
             case PLANT_PROFIT,
-                    GRASS_GROWTH_RATE,
+                    DAILY_GRASS,
                     START_ENERGY,
                     REQUIRED_COPULATION_ENERGY,
                     REPRODUCTION_COST,
@@ -83,15 +87,15 @@ public enum WorldParamType {
                     START_ENERGY,
                     REQUIRED_COPULATION_ENERGY,
                     MAP_WIDTH -> 10;
-            case MAP_VARIANT,
-                    GRASS_VARIANT,
-                    MUTATION_VARIANT,
+            case MAP_TYPE,
+                    GRASS_TYPE,
+                    GEN_TYPE,
                     MOVE_TYPE -> 0;
             case STARTING_GRASS,
                     MIN_GENS,
                     REPRODUCTION_COST-> 2;
             case PLANT_PROFIT,
-                    GRASS_GROWTH_RATE,
+                    DAILY_GRASS,
                     DAY_COST-> 1;
             case STARTING_ANIMALS -> 20;
             case ANIMAL_GEN_SIZE,MAX_GENS -> 7;
@@ -110,13 +114,13 @@ public enum WorldParamType {
         this.mustBeValid(value);
         return switch(this){
             case MAP_HEIGHT, MAP_WIDTH,
-                    STARTING_GRASS, PLANT_PROFIT, GRASS_GROWTH_RATE,
+                    STARTING_GRASS, PLANT_PROFIT, DAILY_GRASS,
                     STARTING_ANIMALS, START_ENERGY, REPRODUCTION_COST,REQUIRED_COPULATION_ENERGY,
                     ANIMAL_GEN_SIZE, DAY_COST, MIN_GENS,MAX_GENS
                     -> value;
-            case MAP_VARIANT -> VariantMap.parse(value);
-            case GRASS_VARIANT -> VariantGrass.parse(value);
-            case MUTATION_VARIANT -> VariantMutation.parse(value);
+            case MAP_TYPE -> MapTypes.parse(value);
+            case GRASS_TYPE -> GrassType.parse(value);
+            case GEN_TYPE -> GenTypes.parse(value);
             case MOVE_TYPE -> MoveType.parse(value);
         };
     }

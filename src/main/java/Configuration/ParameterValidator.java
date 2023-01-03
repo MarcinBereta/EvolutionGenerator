@@ -1,37 +1,35 @@
 package Configuration;
 
 import gui.SimulationWindow;
-//import mapManager.World;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
 public class ParameterValidator {
-    Map<WorldParamType, Object> worldParams;
+    Map<WorldTypeParamaters, Object> worldParams;
 
     public ParameterValidator(String configFileName) throws FileNotFoundException, IllegalArgumentException{
-        worldParams = loadParamWorld(configFileName);
-        checkConsistency();
+        worldParams = loadWorldParamaters(configFileName);
+        checkParamaters();
         new SimulationWindow(worldParams);
     }
 
+    private Map<WorldTypeParamaters, Object> loadWorldParamaters(String configFileName) throws FileNotFoundException, IllegalArgumentException{
+        List<String> fileContent = getFileContent(ConfigFileStructure.CONFIG_PATH  + '/' + configFileName);
 
-    private Map<WorldParamType, Object> loadParamWorld(String configFileName) throws FileNotFoundException, IllegalArgumentException{
-        List<String> fileContent = getFileContent(Config.CONFIG_DIR_PATH  + '/' + configFileName);
-
-        int len = Config.CONFIG_FILE_STRUCTURE.length;
+        int len = ConfigFileStructure.CONFIG_FILE_STRUCTURE.length;
         if (fileContent.size() < len){
-            throw new IllegalArgumentException("Config file has to little arguments");
+            throw new IllegalArgumentException("Config file has to little arguments, create new config file");
         }
         if (fileContent.size() > len){
-            throw new IllegalArgumentException("Config file has much little arguments");
+            throw new IllegalArgumentException("Config file has much arguments");
         }
 
-        Map<WorldParamType, Object> paramValues = new HashMap<>();
+        Map<WorldTypeParamaters, Object> paramValues = new HashMap<>();
         for(int i = 0; i < len; i++){
             String[] parts = fileContent.get(i).split(" ");
-            WorldParamType type = Config.CONFIG_FILE_STRUCTURE[i];
+            WorldTypeParamaters type = ConfigFileStructure.CONFIG_FILE_STRUCTURE[i];
             if (parts.length != 2){
                 throw new IllegalArgumentException("Invalid input for " + type);
             }
@@ -74,67 +72,60 @@ public class ParameterValidator {
         }
     }
 
-    private void checkConsistency() throws IllegalArgumentException {
-        WorldParamType[] mustBePositiveParams = {
-                WorldParamType.MAP_HEIGHT,
-                WorldParamType.MAP_WIDTH,
-                WorldParamType.STARTING_GRASS,
-                WorldParamType.PLANT_PROFIT,
-                WorldParamType.GRASS_GROWTH_RATE,
-                WorldParamType.STARTING_ANIMALS,
-                WorldParamType.START_ENERGY,
-                WorldParamType.REQUIRED_COPULATION_ENERGY,
-                WorldParamType.REPRODUCTION_COST,
-                WorldParamType.MIN_GENS,
-                WorldParamType.MAX_GENS,
-                WorldParamType.ANIMAL_GEN_SIZE
+    private void checkParamaters() throws IllegalArgumentException {
+        WorldTypeParamaters[] mustBePositiveParams = {
+                WorldTypeParamaters.MAP_HEIGHT,
+                WorldTypeParamaters.MAP_WIDTH,
+                WorldTypeParamaters.STARTING_GRASS,
+                WorldTypeParamaters.PLANT_PROFIT,
+                WorldTypeParamaters.DAILY_GRASS,
+                WorldTypeParamaters.STARTING_ANIMALS,
+                WorldTypeParamaters.START_ENERGY,
+                WorldTypeParamaters.REQUIRED_COPULATION_ENERGY,
+                WorldTypeParamaters.REPRODUCTION_COST,
+                WorldTypeParamaters.MIN_GENS,
+                WorldTypeParamaters.MAX_GENS,
+                WorldTypeParamaters.ANIMAL_GEN_SIZE
         };
 
-        for (WorldParamType param : mustBePositiveParams) {
+        for (WorldTypeParamaters param : mustBePositiveParams) {
             mustBePositive(param);
 
         }
 
-        Integer mapHeight = (Integer) getParamValue(WorldParamType.MAP_HEIGHT);
-        Integer mapWidth = (Integer) getParamValue(WorldParamType.MAP_WIDTH);
+        Integer mapHeight = (Integer) getParamatersValue(WorldTypeParamaters.MAP_HEIGHT);
+        Integer mapWidth = (Integer) getParamatersValue(WorldTypeParamaters.MAP_WIDTH);
         Integer mapCellCountVal = mapHeight * mapWidth;
-        String mapCellCountDesc = WorldParamType.MAP_WIDTH + " * " + WorldParamType.MAP_HEIGHT;
+        String mapCellCountDesc = WorldTypeParamaters.MAP_WIDTH + " * " + WorldTypeParamaters.MAP_HEIGHT;
 
-//        INIT_PLANT_COUNT < MAP_HEIGHT * MAP_WIDTH
-        mustBeLower(WorldParamType.STARTING_GRASS, mapCellCountVal, mapCellCountDesc);
-
-//        PLANT_GROWTH_RATE < MAP_HEIGHT * MAP_WIDTH
-        mustBeLower(WorldParamType.GRASS_GROWTH_RATE, mapCellCountVal, mapCellCountDesc);
-
-//        MIN_GENS < MAX_GENS+ 1
+        mustBeLower(WorldTypeParamaters.STARTING_GRASS, mapCellCountVal, mapCellCountDesc);
+        mustBeLower(WorldTypeParamaters.DAILY_GRASS, mapCellCountVal, mapCellCountDesc);
         mustBeLower(
-                WorldParamType.MIN_GENS,
-                (Integer) getParamValue(WorldParamType.MAX_GENS) + 1,
-                "" + WorldParamType.MAX_GENS
+                WorldTypeParamaters.MIN_GENS,
+                (Integer) getParamatersValue(WorldTypeParamaters.MAX_GENS) + 1,
+                "" + WorldTypeParamaters.MAX_GENS
         );
-
-//        MAX_GENS < ANIMAL_GEN_SIZE
         mustBeLower(
-                WorldParamType.MAX_GENS,
-                (Integer) getParamValue(WorldParamType.ANIMAL_GEN_SIZE),
-                "" + WorldParamType.MOVE_TYPE);
+                WorldTypeParamaters.MAX_GENS,
+                (Integer) getParamatersValue(WorldTypeParamaters.ANIMAL_GEN_SIZE),
+                "" + WorldTypeParamaters.MOVE_TYPE);
     }
 
-    private Object getParamValue(WorldParamType paramType) throws IllegalArgumentException {
+    private Object getParamatersValue(WorldTypeParamaters paramType) throws IllegalArgumentException {
         Object val = worldParams.get(paramType);
         if (val == null)
             throw new IllegalArgumentException("no value for " + paramType + "provided");
         return val;
     }
 
-    private void mustBePositive(WorldParamType paramType) throws IllegalArgumentException{
-        Integer val = (Integer) getParamValue(paramType);
+    private void mustBePositive(WorldTypeParamaters paramType) throws IllegalArgumentException{
+        Integer val = (Integer) getParamatersValue(paramType);
         if(val < 0)
             throw new IllegalArgumentException(paramType + "must be positive");
     }
 
-    private void mustBeLower(WorldParamType paramType, Integer limit, String limitDesc) throws IllegalArgumentException{
-        Integer val = (Integer) getParamValue(paramType);
+    private void mustBeLower(WorldTypeParamaters paramType, Integer limit, String limitDesc) throws IllegalArgumentException{
+        Integer val = (Integer) getParamatersValue(paramType);
         if(limit < val)
             throw new IllegalArgumentException(paramType + "cannot be greater than" + limitDesc);
     }

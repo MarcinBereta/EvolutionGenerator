@@ -1,0 +1,6 @@
+Day, AnimalsAmount ,PlantsAmount, AvgEnergy, AvgLifeSpan, FreePlaces, MostPopularGen
+1,20,10,10.0,0.0,382,4
+2,20,20,5.3,0.0,364,4
+3,5,30,3.0,2.0,344,4
+4,1,40,1.0,2.210526315789474,336,2
+5,0,50,NaN,2.3,327,2

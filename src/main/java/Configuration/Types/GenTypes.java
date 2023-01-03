@@ -1,12 +1,12 @@
-package Configuration;
+package Configuration.Types;
 
 import mapElements.MapEffects;
 
-public enum VariantMutation{
+public enum GenTypes {
     FULLRANDOM,
     SMALLCORRECTION;
 
-    static MapEffects parse(int value){
+    public static MapEffects parse(int value){
         return switch (value){
             case 0 -> MapEffects.SMALLCORRECTION;
             case 1 -> MapEffects.FULLRANDOM;

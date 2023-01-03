@@ -1,6 +1,7 @@
 package gui;
 
-import Configuration.WorldParamType;
+import Configuration.Types.MapTypes;
+import Configuration.WorldTypeParamaters;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -31,9 +32,7 @@ public class SimulationWindow implements AnimalMoveInteface{
 
     private int mapHeight=2;
     private int mapWidth=2;
-    private int row = 0;
     private int rowIndex = 0;
-    private int downRowIndex = -1;
     int horizontal,vertical;
     final GridPane gridPane = new GridPane();
     private final MapSettings mapSettings = new MapSettings();
@@ -55,72 +54,71 @@ public class SimulationWindow implements AnimalMoveInteface{
     Map<Circle, Vector2d> positions = new HashMap<>();
 
     private final LinkedList<Animal> animalsToObserve = new LinkedList<>();
-    public SimulationWindow(Map<WorldParamType, Object> worldParams){
+    public SimulationWindow(Map<WorldTypeParamaters, Object> worldParams){
 
-        for(Map.Entry<WorldParamType, Object> entry : worldParams.entrySet()){
+        for(Map.Entry<WorldTypeParamaters, Object> entry : worldParams.entrySet()){
             System.out.println(entry.getKey() + " " + entry.getValue());
 
-            if(entry.getKey() == WorldParamType.MAP_HEIGHT){
+            if(entry.getKey() == WorldTypeParamaters.MAP_HEIGHT){
                 this.mapSettings.mapHeight= ((int) entry.getValue());
                 this.mapHeight  = (int) entry.getValue();
 
             }
-            if(entry.getKey() == WorldParamType.MAP_WIDTH){
+            if(entry.getKey() == WorldTypeParamaters.MAP_WIDTH){
                 this.mapSettings.mapWidth = ((int) entry.getValue());
                 this.mapWidth = (int) entry.getValue();
 
             }
-            if(entry.getKey() == WorldParamType.ANIMAL_GEN_SIZE){
+            if(entry.getKey() == WorldTypeParamaters.ANIMAL_GEN_SIZE){
                 this.mapSettings.genSize = (int) entry.getValue();
             }
-            if (entry.getKey() == WorldParamType.PLANT_PROFIT){
+            if (entry.getKey() == WorldTypeParamaters.PLANT_PROFIT){
                 this.mapSettings.plantProfit = (int) entry.getValue();
             }
-            if(entry.getKey() == WorldParamType.START_ENERGY){
+            if(entry.getKey() == WorldTypeParamaters.START_ENERGY){
                 this.mapSettings.startEnergy = (int) entry.getValue();
             }
-            if (entry.getKey() == WorldParamType.STARTING_GRASS){
+            if (entry.getKey() == WorldTypeParamaters.STARTING_GRASS){
                 this.mapSettings.startGrass = (int) entry.getValue();
             }
-            if (entry.getKey() == WorldParamType.STARTING_ANIMALS){
+            if (entry.getKey() == WorldTypeParamaters.STARTING_ANIMALS){
                 this.mapSettings.startingAnimals = (int) entry.getValue();
             }
-            if(worldParams.get(WorldParamType.MAP_VARIANT) == Configuration.VariantMap.EARTH){
+            if(worldParams.get(WorldTypeParamaters.MAP_TYPE) == MapTypes.EARTH){
                 this.map = new Earth(this.mapSettings);
             }else{
                 this.map = new Hell(this.mapSettings);
             }
-            if(entry.getKey() == WorldParamType.MUTATION_VARIANT){
+            if(entry.getKey() == WorldTypeParamaters.GEN_TYPE){
                 this.mapSettings.genType = (MapEffects) entry.getValue();
             }
-            if(entry.getKey() == WorldParamType.GRASS_VARIANT){
+            if(entry.getKey() == WorldTypeParamaters.GRASS_TYPE){
                 this.mapSettings.jungleType = (MapEffects) entry.getValue();
             }
-            if (entry.getKey() == WorldParamType.REPRODUCTION_COST){
+            if (entry.getKey() == WorldTypeParamaters.REPRODUCTION_COST){
                 this.mapSettings.copulationEnergy = (int) entry.getValue();
             }
-            if (entry.getKey() == WorldParamType.GRASS_GROWTH_RATE){
+            if (entry.getKey() == WorldTypeParamaters.DAILY_GRASS){
                 this.mapSettings.dailyGrass = (int) entry.getValue();
             }
-            if (entry.getKey() == WorldParamType.DAY_COST){
+            if (entry.getKey() == WorldTypeParamaters.DAY_COST){
                 this.mapSettings.dayCost = (int) entry.getValue();
             }
-            if (entry.getKey() == WorldParamType.MOVE_TYPE){
+            if (entry.getKey() == WorldTypeParamaters.MOVE_TYPE){
                 this.mapSettings.moveType = (MapEffects) entry.getValue();
             }
-
-            if (entry.getKey() == WorldParamType.REQUIRED_COPULATION_ENERGY){
+            if (entry.getKey() == WorldTypeParamaters.REQUIRED_COPULATION_ENERGY){
                 this.mapSettings.requiredCopulationEnergy = (int) entry.getValue();
             }
-            if (entry.getKey() == WorldParamType.MIN_GENS){
+            if (entry.getKey() == WorldTypeParamaters.MIN_GENS){
                 this.mapSettings.minGens = (int) entry.getValue();
             }
-            if (entry.getKey() == WorldParamType.MAX_GENS){
+            if (entry.getKey() == WorldTypeParamaters.MAX_GENS){
                 this.mapSettings.maxGens = (int) entry.getValue();
             }
 
         }
-        if(worldParams.get(WorldParamType.MAP_VARIANT) == Configuration.VariantMap.EARTH){
+        if(worldParams.get(WorldTypeParamaters.MAP_TYPE) == MapTypes.EARTH){
             this.map = new Earth(this.mapSettings);
         }else{
             this.map = new Hell(this.mapSettings);
@@ -137,7 +135,7 @@ public class SimulationWindow implements AnimalMoveInteface{
 
         Button startButton = new Button("Start");
         Button stopButton = new Button("Stop");
-        Button exportDataButton = new Button("Export current chart data");
+        Button exportDataButton = new Button("Export data");
         exportDataButton.setDisable(true);
         Insets btnPadding = new Insets(30,30,20,30);
 
@@ -228,15 +226,15 @@ public class SimulationWindow implements AnimalMoveInteface{
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent()) {
                 String fileName = result.get();
-                Alert alertSuccess = new Alert(Alert.AlertType.INFORMATION, "Successfully exported data to ./CSVFiles/" + fileName);
+                Alert alertSuccess = new Alert(Alert.AlertType.INFORMATION, "Successfully exported data to ./SimulationFiles/CSVFiles/" + fileName);
                 alertSuccess.setTitle("Success!");
-                Alert alertFail = new Alert(Alert.AlertType.INFORMATION, "Could not export the chart data. Check console for error log.");
+                Alert alertFail = new Alert(Alert.AlertType.INFORMATION, "Could not export the data. Check console for error log.");
                 alertFail.setTitle("Failure!");
                 try {
-                    this.exportData.exportDataFromChartSeries(this.chartSeriesArrW1, fileName);
+                    this.exportData.exportData(this.chartSeriesArrW1, fileName);
                     alertSuccess.show();
                 } catch (IOException ex) {
-                    System.out.println("Could not export the chart data. -> " + ex);
+                    System.out.println("Could not export the data. -> " + ex);
                     alertFail.show();
                 }
             }

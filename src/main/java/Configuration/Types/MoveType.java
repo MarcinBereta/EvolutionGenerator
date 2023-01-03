@@ -1,4 +1,4 @@
-package Configuration;
+package Configuration.Types;
 
 import mapElements.MapEffects;
 
@@ -6,7 +6,7 @@ public enum MoveType{
     FULLPREDESTINATION,
     BITOFMADDNESS;
 
-    static MapEffects parse(int value){
+    public static MapEffects parse(int value){
         return switch (value){
             case 0 -> MapEffects.FULLPREDESTINATION;
             case 1 -> MapEffects.BITOFMADDNESS;
