@@ -2,12 +2,12 @@ package Configuration.Types;
 
 import mapElements.MapEffects;
 
-public enum GrassType{
+public enum GrassType {  // nieadekwatna nazwa
     TOXIC,
     EQUATOR;
 
-    public static MapEffects parse(int value){
-        return switch (value){
+    public static MapEffects parse(int value) {
+        return switch (value) {
             case 0 -> MapEffects.TOXIC;
             case 1 -> MapEffects.EQUATOR;
             default -> null;

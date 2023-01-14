@@ -18,8 +18,8 @@ public class SimulationEngine implements Runnable {
     public boolean running = true;
 
     private Thread engineThread;
-    private LinkedList<String> genomPopularity= new LinkedList<>();
-    public String mostPopularGen="";
+    private LinkedList<String> genomPopularity = new LinkedList<>();
+    public String mostPopularGen = "";
 
     public SimulationEngine(AbstractWorldMap map, MapSettings mapSettings) {
         this.map = map;
@@ -32,7 +32,7 @@ public class SimulationEngine implements Runnable {
             map.setStartingAnimal(animal);
         }
 
-        for(Animal myanimal : animalsList){
+        for (Animal myanimal : animalsList) {
             genomPopularity.add(Arrays.toString(myanimal.gens.getAllGens()));
         }
         getMostPopularGen();
@@ -60,8 +60,8 @@ public class SimulationEngine implements Runnable {
                 if (animal.isDead()) {
                     String removal = Arrays.toString(animal.gens.getAllGens());
                     int index = 0;
-                    for(String gen : genomPopularity){
-                        if(gen.equals(removal)){
+                    for (String gen : genomPopularity) {
+                        if (gen.equals(removal)) {
                             genomPopularity.remove(index);
                             break;
                         }
@@ -82,28 +82,31 @@ public class SimulationEngine implements Runnable {
             i++;
         }
     }
-    public String getMostPopularGen(){
+
+    public String getMostPopularGen() {
         int max = 0;
         String[] tempArr = new String[genomPopularity.size()];
         tempArr = genomPopularity.toArray(tempArr);
-        for(int i = 0; i < tempArr.length; i++){
+        for (int i = 0; i < tempArr.length; i++) {
             int count = 0;
-            for(int j = 0; j < tempArr.length; j++){
-                if(tempArr[i].equals(tempArr[j])){
+            for (int j = 0; j < tempArr.length; j++) {
+                if (tempArr[i].equals(tempArr[j])) {
                     count++;
                 }
             }
-            if(count > max){
+            if (count > max) {
                 max = count;
                 mostPopularGen = tempArr[i];
             }
         }
         return mostPopularGen;
     }
-    public int oneGenomePlease(){
+
+    public int oneGenomePlease() {
         return Integer.parseInt(getMostPopularGen().split(",")[0].replace("[", ""));
     }
-    public int allpopulargenome(){
+
+    public int allpopulargenome() {
         String input = getMostPopularGen();
         input = input.replaceAll("^\\[|\\]$", "");
         String[] parts = input.split(",");
@@ -139,10 +142,10 @@ public class SimulationEngine implements Runnable {
         this.engineThread.start();
     }
 
-    public LinkedList<String> animalsWithGenom(){
+    public LinkedList<String> animalsWithGenom() {
         LinkedList<String> animalsWithGenom = new LinkedList<>();
-        for(Animal animal : animalsList){
-            if(Arrays.toString(animal.gens.getAllGens()).equals(mostPopularGen)){
+        for (Animal animal : animalsList) {
+            if (Arrays.toString(animal.gens.getAllGens()).equals(mostPopularGen)) {
                 animalsWithGenom.add("Animal at position " + animal.getPosition() + "\n");
             }
         }
@@ -152,12 +155,13 @@ public class SimulationEngine implements Runnable {
     public int countAnimals() {
         return this.animalsList.size();
     }
-    public double getAvgEnergy(){
+
+    public double getAvgEnergy() {
         int sum = 0;
-        for (Animal animal : this.animalsList){
+        for (Animal animal : this.animalsList) {
             sum += animal.getEnergy();
         }
-        return (sum*1.0)/this.countAnimals();
+        return (sum * 1.0) / this.countAnimals();
     }
 
     public void stopSimulation() {
@@ -165,13 +169,13 @@ public class SimulationEngine implements Runnable {
 
     }
 
-    public double getAvgLifeSpan(){
+    public double getAvgLifeSpan() {
         int sum = 0;
-        for (Animal animal : this.deadAnimals){
+        for (Animal animal : this.deadAnimals) {
             sum += animal.getAge();
         }
-        if(this.deadAnimals.size()>0)
-            return (sum*1.0)/this.deadAnimals.size();
+        if (this.deadAnimals.size() > 0)
+            return (sum * 1.0) / this.deadAnimals.size();
         else
             return 0;
     }

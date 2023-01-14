@@ -1,4 +1,4 @@
-package Configuration;
+package Configuration;  // pakietymi zwyczajowo camelCasem
 
 public class ConfigFileStructure {
     public static final String CONFIG_PATH = "./SimulationFiles/ConfigFiles";

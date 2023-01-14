@@ -8,48 +8,49 @@ public class Gens {
     private MapEffects moveType;
     private MapSettings mapSettings;
     private MapEffects genGenereatorType;
-    public Gens(MapSettings mapSettings){
+
+    public Gens(MapSettings mapSettings) {
         this.gens = new int[mapSettings.genSize];
         this.moveType = mapSettings.moveType;
         this.genGenereatorType = mapSettings.genType;
         this.mapSettings = mapSettings;
     }
 
-    public void generateGens(Gens parent1, Gens parent2, int energy1, int energy2){
+    public void generateGens(Gens parent1, Gens parent2, int energy1, int energy2) {
         int newgens[] = new int[gens.length];
-        int site = (int)(Math.random()*100);
+        int side = (int) (Math.random() * 100); // czemu taki zakres?
         int energySum = energy1 + energy2;
-        int energy1Part = (int)(energy1/energySum);
-        int energy2Part = (int)(energy2/energySum);
-        if(energy1 > energy2){
-            if(site > 50){
-               for(int i = 0; i < (int) gens.length * energy1Part; i++){
-                   newgens[i] = parent1.gens[i];
-               }
-               for(int i = (int) gens.length * energy1Part; i < gens.length; i++){
-                   newgens[i] = parent2.gens[i];
-               }
-            }else{
-                for(int i = 0; i < (int) gens.length * energy2Part; i++){
+        int energy1Part = (int) (energy1 / energySum);
+        int energy2Part = (int) (energy2 / energySum);
+        if (energy1 > energy2) {
+            if (side > 50) {
+                for (int i = 0; i < (int) gens.length * energy1Part; i++) {
+                    newgens[i] = parent1.gens[i];  // https://docs.oracle.com/javase/7/docs/api/java/lang/System.html#arraycopy(java.lang.Object,%20int,%20java.lang.Object,%20int,%20int)
+                }
+                for (int i = (int) gens.length * energy1Part; i < gens.length; i++) {
                     newgens[i] = parent2.gens[i];
                 }
-                for(int i = (int) gens.length * energy2Part; i < gens.length; i++){
+            } else {
+                for (int i = 0; i < (int) gens.length * energy2Part; i++) { // DRY; a gdyby tak zamienić wartości parent1 i parent2?
+                    newgens[i] = parent2.gens[i];
+                }
+                for (int i = (int) gens.length * energy2Part; i < gens.length; i++) {
                     newgens[i] = parent1.gens[i];
                 }
             }
-        }else{
-            if(site > 50){
-                for(int i = 0; i < (int) gens.length * energy2Part; i++){
+        } else {
+            if (side > 50) {  // DRY
+                for (int i = 0; i < (int) gens.length * energy2Part; i++) {
                     newgens[i] = parent2.gens[i];
                 }
-                for(int i = (int) gens.length * energy2Part; i < gens.length; i++){
+                for (int i = (int) gens.length * energy2Part; i < gens.length; i++) {
                     newgens[i] = parent1.gens[i];
                 }
-            }else{
-                for(int i = 0; i < (int) gens.length * energy1Part; i++){
+            } else {
+                for (int i = 0; i < (int) gens.length * energy1Part; i++) {
                     newgens[i] = parent1.gens[i];
                 }
-                for(int i = (int) gens.length * energy1Part; i < gens.length; i++){
+                for (int i = (int) gens.length * energy1Part; i < gens.length; i++) {
                     newgens[i] = parent2.gens[i];
                 }
             }
@@ -59,46 +60,46 @@ public class Gens {
 
     }
 
-    private void getRandomizeGens(int[] newgens){
-        int gensToChange = this.mapSettings.minGens + (int)(Math.random()*((this.mapSettings.maxGens - this.mapSettings.minGens) + 1));
+    private void getRandomizeGens(int[] newgens) {  // get czy randomize?
+        int gensToChange = this.mapSettings.minGens + (int) (Math.random() * ((this.mapSettings.maxGens - this.mapSettings.minGens) + 1));
         int gensToChangeIndexes[] = new int[gensToChange];
         int genCounter = 0;
-        while(genCounter < gensToChange){
-            int index = (int)(Math.random()*newgens.length);
+        while (genCounter < gensToChange) {
+            int index = (int) (Math.random() * newgens.length);
             boolean isUnique = true;
-            for(int i = 0; i < genCounter; i++){
-                if(gensToChangeIndexes[i] == index){
+            for (int i = 0; i < genCounter; i++) {
+                if (gensToChangeIndexes[i] == index) {
                     isUnique = false;
                 }
             }
-            if(isUnique){
+            if (isUnique) {
                 gensToChangeIndexes[genCounter] = index;
                 genCounter++;
             }
         }
-        if(genGenereatorType == MapEffects.FULLRANDOM){
+        if (genGenereatorType == MapEffects.FULLRANDOM) {
             genCounter = 0;
-            while (genCounter < gensToChange){
-                int newGen = (int)(Math.random()*8);
-                if(newGen != newgens[gensToChangeIndexes[genCounter]]){
+            while (genCounter < gensToChange) {
+                int newGen = (int) (Math.random() * 8);
+                if (newGen != newgens[gensToChangeIndexes[genCounter]]) {
                     newgens[gensToChangeIndexes[genCounter]] = newGen;
                     genCounter++;
                 }
             }
-        }else if(genGenereatorType == MapEffects.SMALLCORRECTION){
+        } else if (genGenereatorType == MapEffects.SMALLCORRECTION) {
             genCounter = 0;
-            while (genCounter < gensToChange){
-                int ascOrDesc = (int)(Math.random()*2);
-                if(ascOrDesc == 0){
-                    if(newgens[gensToChangeIndexes[genCounter]] == 0){
+            while (genCounter < gensToChange) {
+                int ascOrDesc = (int) (Math.random() * 2);
+                if (ascOrDesc == 0) {
+                    if (newgens[gensToChangeIndexes[genCounter]] == 0) {
                         newgens[gensToChangeIndexes[genCounter]] = 7;
-                    }else{
+                    } else {
                         newgens[gensToChangeIndexes[genCounter]]--;
                     }
-                }else{
-                    if(newgens[gensToChangeIndexes[genCounter]] == 7){
+                } else {
+                    if (newgens[gensToChangeIndexes[genCounter]] == 7) {
                         newgens[gensToChangeIndexes[genCounter]] = 0;
-                    }else{
+                    } else {
                         newgens[gensToChangeIndexes[genCounter]]++;
                     }
                 }
@@ -108,37 +109,37 @@ public class Gens {
         this.gens = newgens;
     }
 
-    public int getGen(){
+    public int getGen() {
         int moveIndex = (int) (Math.random() * 100);
-        if(moveType == MapEffects.BITOFMADDNESS){
-            if (moveIndex > 80){
+        if (moveType == MapEffects.BITOFMADDNESS) {
+            if (moveIndex > 80) {
                 genIndex = (genIndex + 2) % gens.length;
-            }else{
+            } else {
                 genIndex = (genIndex + 1) % gens.length;
             }
-        }else if(moveType == MapEffects.FULLPREDESTINATION){
+        } else if (moveType == MapEffects.FULLPREDESTINATION) {
             genIndex = (genIndex + 1) % gens.length;
         }
 
         return gens[genIndex];
     }
 
-    public void generateStartingGens(){
+    public void generateStartingGens() {
         int newGens[] = new int[gens.length];
-        for(int i = 0; i < gens.length; i++){
-            this.gens[i] = (int)(Math.random()*this.gens.length);
+        for (int i = 0; i < gens.length; i++) {
+            this.gens[i] = (int) (Math.random() * this.gens.length);
         }
     }
 
     public int[] getAllGens() {
-        return gens;
+        return gens;  // dehermetyzacja
     }
 
     @Override
     public String toString() {
 
         String result = "";
-        for(int i = 0; i < this.gens.length; i++){
+        for (int i = 0; i < this.gens.length; i++) {
             result += gens[i] + " ";
         }
         return result;

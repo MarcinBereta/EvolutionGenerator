@@ -1,6 +1,6 @@
 package mapElements;
 
-public enum MapEffects {
+public enum MapEffects {    // czy to są elementy mapy? czy wrzucenie wszystkiego do jednego worka jest uzasadnione?
     TOXIC,
     EQUATOR,
     FULLPREDESTINATION,

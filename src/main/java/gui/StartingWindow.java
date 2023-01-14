@@ -25,7 +25,8 @@ import java.util.stream.Stream;
 public class StartingWindow {
     private final ChoiceBox<String> choiceBox = new ChoiceBox<>(FXCollections.observableArrayList(listFiles(ConfigFileStructure.CONFIG_PATH)));
     private final Label errorMsg;
-    public StartingWindow(){
+
+    public StartingWindow() {
         VBox root = new VBox();
         root.setStyle("-fx-background-color: lightblue;");
         Stage inputWindow = new Stage();
@@ -38,11 +39,11 @@ public class StartingWindow {
         errorMsg = new Label();
         errorMsg.setTextFill(Color.RED);
         Button submitButton = new Button("Create New Simulation");
-        submitButton.setBackground(new Background(new BackgroundFill(Color.GREENYELLOW,CornerRadii.EMPTY, Insets.EMPTY)));
+        submitButton.setBackground(new Background(new BackgroundFill(Color.GREENYELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
 
         submitButton.setOnAction(actionEvent -> {
             String val = choiceBox.getValue();
-            if (val == null){
+            if (val == null) {
                 showError("Configuration file must be chosen");
                 return;
             }
@@ -53,7 +54,7 @@ public class StartingWindow {
         container.setAlignment(Pos.CENTER);
         container.setSpacing(30);
         container.setSpacing(20);
-        container.setPadding(new Insets(12,12,12, 12));
+        container.setPadding(new Insets(12, 12, 12, 12));
         container.setAlignment(Pos.CENTER);
         container.setBackground(new Background(new BackgroundFill(Color.LIGHTPINK, CornerRadii.EMPTY, Insets.EMPTY)));
         inputWindow.setScene(new Scene(container));
@@ -63,15 +64,15 @@ public class StartingWindow {
     }
 
 
-    private VBox createConfigFileSelection(){
+    private VBox createConfigFileSelection() {
         Label titleLabel = new Label(("Evolution Generator"));
-        titleLabel.setPadding(new Insets(0,0,10,0));
+        titleLabel.setPadding(new Insets(0, 0, 10, 0));
         titleLabel.setFont(new Font("Arial", 16));
         titleLabel.setTextFill(Color.DARKRED);
         Label choiceBoxLabel = new Label("Choose configuration file");
         choiceBoxLabel.setFont(new Font(14));
         Button RefreshButton = new Button("\uD83D\uDD04");
-        RefreshButton.setBackground(new Background(new BackgroundFill(Color.GREEN,CornerRadii.EMPTY, Insets.EMPTY)));
+        RefreshButton.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
 
         RefreshButton.setOnAction(event -> {
             choiceBox.getItems().clear();
@@ -79,22 +80,22 @@ public class StartingWindow {
         });
 
         Button newConfigFileButton = new Button("New File");
-        newConfigFileButton.setBackground(new Background(new BackgroundFill(Color.LIGHTSKYBLUE,CornerRadii.EMPTY, Insets.EMPTY)));
+        newConfigFileButton.setBackground(new Background(new BackgroundFill(Color.LIGHTSKYBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
         newConfigFileButton.setOnAction(event -> new ConfigureYourInputWindow());
         HBox choiceContainer = new HBox(choiceBox, RefreshButton, newConfigFileButton);
-        VBox configFileSelection = new VBox(titleLabel,choiceBoxLabel, choiceContainer);
+        VBox configFileSelection = new VBox(titleLabel, choiceBoxLabel, choiceContainer);
         choiceContainer.setAlignment(Pos.CENTER);
         configFileSelection.setAlignment(Pos.CENTER);
         return configFileSelection;
     }
+
     public List<String> listFiles(String dirPath) {
-        try{
+        try {
             return Stream.of(Objects.requireNonNull(new File(dirPath).listFiles()))
                     .filter(file -> !file.isDirectory())
                     .map(File::getName)
                     .collect(Collectors.toList());
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.print(e.getMessage());
             return new ArrayList<>();
         }
@@ -105,19 +106,20 @@ public class StartingWindow {
         handleSimulationCreationResult(ParameterValidator.startNewSimulation(ConfigFileName));
     }
 
-    private void showError(String message){
+    private void showError(String message) {
         errorMsg.setText(message);
         errorMsg.setTextFill(Color.RED);
     }
-    private void showSuccess(){
+
+    private void showSuccess() {
         errorMsg.setText("Successfully created new simulation");
         errorMsg.setTextFill(Color.GREEN);
     }
-    private void handleSimulationCreationResult(String creationResult){
-        if (Objects.equals(creationResult, "")){
+
+    private void handleSimulationCreationResult(String creationResult) {
+        if (Objects.equals(creationResult, "")) {
             showSuccess();
-        }
-        else{
+        } else {
             showError(creationResult);
         }
     }

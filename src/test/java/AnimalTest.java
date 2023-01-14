@@ -1,9 +1,10 @@
 import org.junit.jupiter.api.Test;
 
 import mapElements.*;
+
 public class AnimalTest {
     @Test
-    void animalTest(){
+    void animalTest() {
 //        Animal testAnimal =
 //                new Animal(new Vector2d(2,2), MapDirection.NORTH, 20, 10, 1,
 //                        8,0,10, null);

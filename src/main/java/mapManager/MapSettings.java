@@ -20,13 +20,15 @@ public class MapSettings {
     public int requiredCopulationEnergy = 21;
     public int maxGens = 5;
     public int minGens = 4;
+
     public MapSettings() {
     }
+
     public MapSettings(
             int mapWidth, int mapHeight, int plantProfit, int dayCost, int startEnergy, int copulationEnergy,
             int jungleSize, int dailyGrass, int startGrass, int startingAnimals,
             MapEffects jungleType, MapEffects moveType, int genSize, MapEffects genType, int requiredCopulationEnergy, int maxGens, int minGens
-    ){
+    ) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.plantProfit = plantProfit;
@@ -47,8 +49,8 @@ public class MapSettings {
 
     public void updateMapSettings(
             int mapWidth, int mapHeight, int plantProfit, int dayCost, int startEnergy, int copulationEnergy,
-            int jungleSize, int dailyGrass, MapEffects jungleType, MapEffects moveType, int genSize,MapEffects genType, int requiredCopulationEnergy
-           ){
+            int jungleSize, int dailyGrass, MapEffects jungleType, MapEffects moveType, int genSize, MapEffects genType, int requiredCopulationEnergy
+    ) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.plantProfit = plantProfit;
@@ -62,7 +64,6 @@ public class MapSettings {
         this.genType = genType;
         this.requiredCopulationEnergy = requiredCopulationEnergy;
     }
-
 
 
 }

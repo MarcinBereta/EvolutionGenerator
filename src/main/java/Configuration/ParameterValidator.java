@@ -7,40 +7,39 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class ParameterValidator {
-    Map<WorldTypeParamaters, Object> worldParams;
+    Map<WorldTypeParamaters, Object> worldParams;   // modyfikator dostępu
 
-    public ParameterValidator(String configFileName) throws FileNotFoundException, IllegalArgumentException{
+    public ParameterValidator(String configFileName) throws FileNotFoundException, IllegalArgumentException {  // IllegalArgumentException jest unchecked
         worldParams = loadWorldParamaters(configFileName);
         checkParamaters();
-        new SimulationWindow(worldParams);
+        new SimulationWindow(worldParams);  // nieczytelny przepływ sterowania
     }
 
-    private Map<WorldTypeParamaters, Object> loadWorldParamaters(String configFileName) throws FileNotFoundException, IllegalArgumentException{
-        List<String> fileContent = getFileContent(ConfigFileStructure.CONFIG_PATH  + '/' + configFileName);
+    private Map<WorldTypeParamaters, Object> loadWorldParamaters(String configFileName) throws FileNotFoundException, IllegalArgumentException {
+        List<String> fileContent = getFileContent(ConfigFileStructure.CONFIG_PATH + '/' + configFileName);  // https://stackoverflow.com/questions/412380/how-to-combine-paths-in-java
 
         int len = ConfigFileStructure.CONFIG_FILE_STRUCTURE.length;
-        if (fileContent.size() < len){
-            throw new IllegalArgumentException("Config file has to little arguments, create new config file");
+        if (fileContent.size() < len) {
+            throw new IllegalArgumentException("Config file has too little arguments, create new config file");
         }
-        if (fileContent.size() > len){
+        if (fileContent.size() > len) {
             throw new IllegalArgumentException("Config file has much arguments");
         }
 
         Map<WorldTypeParamaters, Object> paramValues = new HashMap<>();
-        for(int i = 0; i < len; i++){
+        for (int i = 0; i < len; i++) {
             String[] parts = fileContent.get(i).split(" ");
             WorldTypeParamaters type = ConfigFileStructure.CONFIG_FILE_STRUCTURE[i];
-            if (parts.length != 2){
-                throw new IllegalArgumentException("Invalid input for " + type);
+            if (parts.length != 2) {
+                throw new IllegalArgumentException("Invalid input for " + type);    // to nie jest właściwy typ wyjątku: Thrown to indicate that a method has been passed an illegal or inappropriate argument. [https://docs.oracle.com/javase/7/docs/api/java/lang/IllegalArgumentException.html]
             }
-            if (!Objects.equals(parts[0], type.getKey())){
+            if (!Objects.equals(parts[0], type.getKey())) {
                 throw new IllegalArgumentException("Invalid key for " + type);
             }
             int value;
-            try{
+            try {
                 value = Integer.parseInt(parts[1]);
-            }
-            catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Invalid input for " + type);
             }
             Object parsedValue = type.parse(value);
@@ -49,7 +48,7 @@ public class ParameterValidator {
         return paramValues;
     }
 
-    private List<String> getFileContent(String filePath) throws FileNotFoundException{
+    private List<String> getFileContent(String filePath) throws FileNotFoundException {
         List<String> lines = new ArrayList<>();
         File myObj = new File(filePath);
         Scanner myReader = new Scanner(myObj);
@@ -61,18 +60,17 @@ public class ParameterValidator {
         return lines;
     }
 
-    public static String startNewSimulation(String ConfigFileName){
-        try{
+    public static String startNewSimulation(String ConfigFileName) {
+        try {
             new ParameterValidator(ConfigFileName);
-            return "";
-        }
-        catch (IllegalArgumentException | FileNotFoundException e){
+            return "";  // ??
+        } catch (IllegalArgumentException | FileNotFoundException e) {
             System.out.println(e.getMessage());
-            return e.getMessage();
+            return e.getMessage();  // ??
         }
     }
 
-    private void checkParamaters() throws IllegalArgumentException {
+    private void checkParamaters() throws IllegalArgumentException {    // może czytelniej by było mieć osobną metodę na każdy parametr?
         WorldTypeParamaters[] mustBePositiveParams = {
                 WorldTypeParamaters.MAP_HEIGHT,
                 WorldTypeParamaters.MAP_WIDTH,
@@ -90,13 +88,12 @@ public class ParameterValidator {
 
         for (WorldTypeParamaters param : mustBePositiveParams) {
             mustBePositive(param);
-
         }
 
         Integer mapHeight = (Integer) getParamatersValue(WorldTypeParamaters.MAP_HEIGHT);
         Integer mapWidth = (Integer) getParamatersValue(WorldTypeParamaters.MAP_WIDTH);
         Integer mapCellCountVal = mapHeight * mapWidth;
-        String mapCellCountDesc = WorldTypeParamaters.MAP_WIDTH + " * " + WorldTypeParamaters.MAP_HEIGHT;
+        String mapCellCountDesc = WorldTypeParamaters.MAP_WIDTH + " * " + WorldTypeParamaters.MAP_HEIGHT;   // jak się to ma do walidacji ustawień?
 
         mustBeLower(WorldTypeParamaters.STARTING_GRASS, mapCellCountVal, mapCellCountDesc);
         mustBeLower(WorldTypeParamaters.DAILY_GRASS, mapCellCountVal, mapCellCountDesc);
@@ -118,15 +115,15 @@ public class ParameterValidator {
         return val;
     }
 
-    private void mustBePositive(WorldTypeParamaters paramType) throws IllegalArgumentException{
+    private void mustBePositive(WorldTypeParamaters paramType) throws IllegalArgumentException {
         Integer val = (Integer) getParamatersValue(paramType);
-        if(val < 0)
+        if (val < 0)
             throw new IllegalArgumentException(paramType + "must be positive");
     }
 
-    private void mustBeLower(WorldTypeParamaters paramType, Integer limit, String limitDesc) throws IllegalArgumentException{
+    private void mustBeLower(WorldTypeParamaters paramType, Integer limit, String limitDesc) throws IllegalArgumentException {
         Integer val = (Integer) getParamatersValue(paramType);
-        if(limit < val)
+        if (limit < val)
             throw new IllegalArgumentException(paramType + "cannot be greater than" + limitDesc);
     }
 }

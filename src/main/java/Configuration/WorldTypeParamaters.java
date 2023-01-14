@@ -10,14 +10,13 @@ public enum WorldTypeParamaters {
     MAP_HEIGHT, MAP_WIDTH, MAP_TYPE,
     STARTING_GRASS, PLANT_PROFIT, DAILY_GRASS, GRASS_TYPE,
     STARTING_ANIMALS, START_ENERGY, REQUIRED_COPULATION_ENERGY,
-    REPRODUCTION_COST,  GEN_TYPE,
+    REPRODUCTION_COST, GEN_TYPE,
     ANIMAL_GEN_SIZE, MOVE_TYPE, DAY_COST,
     MAX_GENS, MIN_GENS;
 
 
-
-    public String getKey(){
-        return switch(this){
+    public String getKey() {
+        return switch (this) {
             case MAP_HEIGHT -> "MAP_HEIGHT";
             case MAP_WIDTH -> "MAP_WIDTH";
             case MAP_TYPE -> "MAP_TYPE";
@@ -38,8 +37,8 @@ public enum WorldTypeParamaters {
         };
     }
 
-    public String toString(){
-        return switch (this){
+    public String toString() {
+        return switch (this) {
             case MAP_HEIGHT -> "Map height";
             case MAP_WIDTH -> "Map width";
             case MAP_TYPE -> "Map type";
@@ -60,8 +59,8 @@ public enum WorldTypeParamaters {
         };
     }
 
-    public Vector2d getValueRange(){
-        return switch(this){
+    public Vector2d getValueRange() {   // Vector2d nie reprezentuje zakresu, tylko... wektor
+        return switch (this) {
             case MAP_TYPE,
                     GRASS_TYPE,
                     GEN_TYPE,
@@ -72,7 +71,7 @@ public enum WorldTypeParamaters {
                     REQUIRED_COPULATION_ENERGY,
                     REPRODUCTION_COST,
                     DAY_COST,
-                    MIN_GENS,MAX_GENS,
+                    MIN_GENS, MAX_GENS,
                     ANIMAL_GEN_SIZE -> new Vector2d(0, 100);
             case STARTING_ANIMALS -> new Vector2d(0, 1000);
             case MAP_HEIGHT,
@@ -81,8 +80,8 @@ public enum WorldTypeParamaters {
         };
     }
 
-    public int getDefaultValue(){
-        return switch(this){
+    public int getDefaultValue() {
+        return switch (this) {
             case MAP_HEIGHT,
                     START_ENERGY,
                     REQUIRED_COPULATION_ENERGY,
@@ -93,31 +92,30 @@ public enum WorldTypeParamaters {
                     MOVE_TYPE -> 0;
             case STARTING_GRASS,
                     MIN_GENS,
-                    REPRODUCTION_COST-> 2;
+                    REPRODUCTION_COST -> 2;
             case PLANT_PROFIT,
                     DAILY_GRASS,
-                    DAY_COST-> 1;
+                    DAY_COST -> 1;
             case STARTING_ANIMALS -> 20;
-            case ANIMAL_GEN_SIZE,MAX_GENS -> 7;
+            case ANIMAL_GEN_SIZE, MAX_GENS -> 7;
         };
     }
 
-    private void mustBeValid(int value) throws IllegalArgumentException{
+    private void mustBeValid(int value) throws IllegalArgumentException {
         Vector2d range = this.getValueRange();
-        if (value < range.x || range.y < value){
+        if (value < range.x || range.y < value) {
             throw new IllegalArgumentException(this + "must be in range: " + range);
         }
     }
 
 
-    public Object parse(int value) throws IllegalArgumentException{
+    public Object parse(int value) throws IllegalArgumentException {
         this.mustBeValid(value);
-        return switch(this){
+        return switch (this) {
             case MAP_HEIGHT, MAP_WIDTH,
                     STARTING_GRASS, PLANT_PROFIT, DAILY_GRASS,
-                    STARTING_ANIMALS, START_ENERGY, REPRODUCTION_COST,REQUIRED_COPULATION_ENERGY,
-                    ANIMAL_GEN_SIZE, DAY_COST, MIN_GENS,MAX_GENS
-                    -> value;
+                    STARTING_ANIMALS, START_ENERGY, REPRODUCTION_COST, REQUIRED_COPULATION_ENERGY,
+                    ANIMAL_GEN_SIZE, DAY_COST, MIN_GENS, MAX_GENS -> value;
             case MAP_TYPE -> MapTypes.parse(value);
             case GRASS_TYPE -> GrassType.parse(value);
             case GEN_TYPE -> GenTypes.parse(value);

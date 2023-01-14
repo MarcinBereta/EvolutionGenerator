@@ -5,8 +5,8 @@ import mapElements.*;
 import java.io.InvalidObjectException;
 import java.util.*;
 
-public class IWorldMap implements IPositionChangeObserver{
-    public int mapWidth;
+public class IWorldMap implements IPositionChangeObserver {  // klasa ma nazwę jak interfejs
+    public int mapWidth;  // co może pójść nie tak?
     public int mapHeight;
     public int plantProfit;
     public int dayCost;
@@ -39,7 +39,6 @@ public class IWorldMap implements IPositionChangeObserver{
     private Map<Vector2d, FieldHistory> fieldHistory = new HashMap<>();
 
 
-
     public IWorldMap(int mapWidth, int mapHeight, int plantProfit, int dayCost, int startEnergy, int copulationEnergy,
                      int jungleType, int edgeType, int startGrass,
                      int moveOption, int dailyGrass, int randomGens, int genSize) {
@@ -62,21 +61,22 @@ public class IWorldMap implements IPositionChangeObserver{
         for (int i = 0; i < startGrass; i++) {
             this.addGrass();
         }
-        for(int i = 0; i < mapWidth; i++){
-            for(int j = 0; j < mapHeight; j++){
-                dieSet.add(new FieldHistory(new Vector2d(i,j), 0));
-                fieldHistory.put(new Vector2d(i,j), new FieldHistory(new Vector2d(i,j), 0));
+        for (int i = 0; i < mapWidth; i++) {
+            for (int j = 0; j < mapHeight; j++) {
+                dieSet.add(new FieldHistory(new Vector2d(i, j), 0));
+                fieldHistory.put(new Vector2d(i, j), new FieldHistory(new Vector2d(i, j), 0));
             }
         }
     }
 
 
-    public void setStartingAnimal(Animal myAnimal){
+    public void setStartingAnimal(Animal myAnimal) {
         animalsList.add(myAnimal);
         animals.put(myAnimal.getPosition(), new ArrayList<>());
         animals.get(myAnimal.getPosition()).add(myAnimal);
         myAnimal.addObserver(this);
     }
+
     private void generateStartingJungle() {
         if (jungleType == 0) {
             int tempJunglex = 0;
@@ -104,10 +104,10 @@ public class IWorldMap implements IPositionChangeObserver{
             while (elementCount < jungleSize) {
                 int x = (int) (Math.random() * mapWidth);
                 int y = (int) (Math.random() * mapHeight);
-                if(grass.containsKey(new Vector2d(x,y))){
+                if (grass.containsKey(new Vector2d(x, y))) {
                     continue;
-                }else{
-                    junglePossible.add(new Grass(new Vector2d(x,y)));
+                } else {
+                    junglePossible.add(new Grass(new Vector2d(x, y)));
                     elementCount++;
                 }
             }
@@ -122,6 +122,7 @@ public class IWorldMap implements IPositionChangeObserver{
             this.addGrassToEdge();
         }
     }
+
     private void addGrassToJungle() {
         int index = (int) (Math.random() * junglePossible.size());
         Grass grass = junglePossible.get(index);
@@ -131,12 +132,12 @@ public class IWorldMap implements IPositionChangeObserver{
 
     private void addGrassToEdge() {
         LinkedList<Vector2d> edgePossible = new LinkedList<>();
-        for(int i = 0; i < mapWidth; i++){
-            for(int j = 0; j < mapHeight; j++){
-                if(grass.containsKey(new Vector2d(i,j)) || junglePossible.contains(new Grass(new Vector2d(i,j)))){
+        for (int i = 0; i < mapWidth; i++) {
+            for (int j = 0; j < mapHeight; j++) {
+                if (grass.containsKey(new Vector2d(i, j)) || junglePossible.contains(new Grass(new Vector2d(i, j)))) {
                     continue;
-                }else{
-                    edgePossible.add(new Vector2d(i,j));
+                } else {
+                    edgePossible.add(new Vector2d(i, j));
                 }
             }
         }
@@ -288,8 +289,6 @@ public class IWorldMap implements IPositionChangeObserver{
 //    public Vector2d getUpperRight() {
 //        return new Vector2d(this.mapWidth,this.mapHeight);
 //    }
-
-
 
 
 }
